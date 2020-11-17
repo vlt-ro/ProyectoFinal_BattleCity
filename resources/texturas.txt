@@ -1,0 +1,4 @@
+resources/img/bricks_whole.png
+resources/img/concrete.png
+resources/img/flag.png
+resources/img/ally-right.png
