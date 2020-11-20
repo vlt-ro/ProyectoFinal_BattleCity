@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_ttf.h>
 
@@ -7,18 +8,34 @@
 #include "battlecity.h" 
 #include  "graphics.h"
 
+#include "states/MainMenu.h"
+#include "states/Game.h"
+#include "Render.h"
+
 using namespace graphics;
 
 using namespace std;
 
-BattleCity::BattleCity(){}
+BattleCity::BattleCity():
+		currState(nullptr),
+		window(nullptr)
+{
+
+}
+
+BattleCity::~BattleCity()
+{
+	if(currState)
+		delete currState;
+
+	SDL_DestroyWindow(window);
+}
 
 void BattleCity::gameRules() {}
 
 void BattleCity::playLevel1()
 {
     map();
- 
 }
 
 void BattleCity::mainMenu()
@@ -55,7 +72,7 @@ void BattleCity::mainMenu()
     //While application is running
     while( !quit )
     {
-        //Handle events on queue
+    	//Handle events on queue
         while( SDL_PollEvent( &e ) != 0 )
         {
             //User requests quit
@@ -66,30 +83,31 @@ void BattleCity::mainMenu()
 
             else if( e.type == SDL_KEYDOWN )
             {
-                switch( e.key.keysym.sym )
-                {
-                    case SDLK_DOWN:
-                        counter++;
-                        break;
-                    case SDLK_UP:
-                        counter--;
-                        break;
-                    case SDLK_RETURN:
-                        if (counter%3==2) quit=true;
-                        else if (counter%3==1) 
-                        {
-                            quit =true    ;
-                            printf("El juego aun no sirve para 2 jugadores\n");
-                        }
-                        else if (counter%3==0)
-                        {
-                            //RenderRectangle(rect1.x, rect1.y, rect1.w, rect1.h, black, true);
-                            //SDL_RenderPresent( gRenderer );
-
-                            playLevel1();
-                        }
-                        break;
-                }
+            	currState->inputKey(e.key.keysym.sym);
+//                switch( e.key.keysym.sym )
+//                {
+//                    case SDLK_DOWN:
+//                        counter++;
+//                        break;
+//                    case SDLK_UP:
+//                        counter--;
+//                        break;
+//                    case SDLK_RETURN:
+//                        if (counter%3==2) quit=true;
+//                        else if (counter%3==1)
+//                        {
+//                            quit =true    ;
+//                            printf("El juego aun no sirve para 2 jugadores\n");
+//                        }
+//                        else if (counter%3==0)
+//                        {
+//                            //RenderRectangle(rect1.x, rect1.y, rect1.w, rect1.h, black, true);
+//                            //SDL_RenderPresent( gRenderer );
+//
+//                            playLevel1();
+//                        }
+//                        break;
+//                }
             }
             RenderRectangle(rect1.x, rect1.y, rect1.w, rect1.h, black, true);
 
@@ -107,9 +125,8 @@ void BattleCity::mainMenu()
     closeGraphics();
 } 
 
-void BattleCity::initGraphics()
+void BattleCity::start()
 {
-
     //Start up SDL and create window
     if( !init() )
     {
@@ -117,15 +134,51 @@ void BattleCity::initGraphics()
     }
     else
     {
-        //Load media
-        if( !loadMedia() )
+    	currState = new MainMenu;
+
+    	currState->start();
+
+        //Event handler
+        SDL_Event e;
+        int counter = 0;
+
+        //Main loop flag
+        bool quit = false;
+        //While application is running
+        while( !quit )
         {
-            printf( "Failed to load media!\n" );
+        	//Handle events on queue
+            while( SDL_PollEvent( &e ) != 0 )
+            {
+                //User requests quit
+                if( e.type == SDL_QUIT )
+                {
+                    quit = true;
+                }
+
+                else if( e.type == SDL_KEYDOWN )
+                {
+                	currState->inputKey(e.key.keysym.sym);
+                }
+            }
+
+            //TODO: read returned value
+            currState->task();
+
+            //delete currState;
+            //currState = new GameSate;
+            //currState->start()
         }
-        else
-        {   
-            mainMenu();
-        }
+
+//        //Load media
+//        if( !loadMedia() )
+//        {
+//            printf( "Failed to load media!\n" );
+//        }
+//        else
+//        {
+//            mainMenu();
+//        }
     }
 
 }
@@ -134,5 +187,43 @@ void BattleCity::closeGraphics()
 {
     //Free resources and close SDL
     close();
-} 
+}
+
+bool BattleCity::init()
+{
+
+	//Initialization flag
+	bool success = false;
+
+	//Initialize SDL
+	if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+		printf( "SDL could not initialize! SDL Error: %s\n", SDL_GetError() );
+	else
+	{
+		//Set texture filtering to linear
+		if( !SDL_SetHint( SDL_HINT_RENDER_SCALE_QUALITY, "1" ) )
+		{
+			printf( "Warning: Linear texture filtering not enabled!" );
+		}
+
+		//Create window
+		window = SDL_CreateWindow( "BATTLE_CITY", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN );
+		if( window == NULL )
+			printf( "Window could not be created! SDL Error: %s\n", SDL_GetError() );
+		else
+		{
+			try
+			{
+				Render::init(window);
+				success = true;
+			}
+			catch(std::string &e)
+			{
+				printf("%s\n",e.c_str());
+			}
+		}
+	}
+
+	return success;
+}
 

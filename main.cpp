@@ -7,7 +7,7 @@ int main()
 {
   BattleCity myGame;
 
-  myGame.initGraphics(); // Se empieza el juego
+  myGame.start(); // Se empieza el juego
 
   return 0; 
 }
