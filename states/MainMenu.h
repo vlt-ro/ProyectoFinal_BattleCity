@@ -21,6 +21,17 @@ using namespace std;
 class MainMenu: public State
 {
 public:
+
+	/**
+	 * Events returned by the "task" method
+	 */
+	enum
+	{
+		eONE_PLAYER = 0x01,///< Mode "one player" was selected
+		eTWO_PLAYERS,      ///< Mode "Two player" was selected
+		eEXIT              ///< Exit game
+	};
+
 	MainMenu();
 	virtual ~MainMenu();
 

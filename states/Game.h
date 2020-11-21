@@ -32,9 +32,8 @@ public:
 	bool start();
 	bool stop();
 
-	map<string, SDL_Texture*> texturaGame;
-
 private:
+	map<string, SDL_Texture*> texturaGame;
 };
 
 #endif /* STATES_GAME_H_ */

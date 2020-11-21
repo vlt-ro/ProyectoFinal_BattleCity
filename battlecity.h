@@ -21,11 +21,6 @@ public :
   void gameRules();
 
   /**
-   * @brief Ejecuta el juego
-   */  
-  void playLevel1();
-
-  /**
    * @brief Menu en el que el usario puede decidir jugar o leer las reglas
    */
   void start();

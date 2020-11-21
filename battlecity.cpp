@@ -31,11 +31,8 @@ BattleCity::~BattleCity()
 	SDL_DestroyWindow(window);
 }
 
-void BattleCity::gameRules() {}
-
-void BattleCity::playLevel1()
+void BattleCity::gameRules()
 {
-    //map();
 }
 
 void BattleCity::start()
@@ -48,7 +45,6 @@ void BattleCity::start()
     else
     {
     	currState = new MainMenu;
-
     	currState->start();
 
         //Event handler
@@ -80,27 +76,22 @@ void BattleCity::start()
 
             switch(state)
             {
-            	case 1:
+            	case MainMenu::eONE_PLAYER:
+            		/* Update current state */
             		delete currState;
                     currState = new Game;
-                    currState->start();
-
-
+                    currState->start(); //Initialize the new state
                     break;
-            	case 2:
+            	case MainMenu::eTWO_PLAYERS:
             		printf("Esta modalidad no está disponible");
             		quit = true;
             		break;
-            	case 3:
+            	case MainMenu::eEXIT:
             		quit = true;
             		break;
             }
-
-
         }
-
     }
-
 }
 
 void BattleCity::closeGraphics()

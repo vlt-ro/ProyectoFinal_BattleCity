@@ -30,7 +30,7 @@ Game::Game()
 
 Game::~Game()
 {
-
+	stop();
 }
 
 void Game::inputKey(string key)
@@ -109,8 +109,8 @@ void Game::score()
 
 bool Game::start()
 {
-	ifstream file1(Config::textureGame.c_str());
-    ifstream file2(Config::textureGame_names.c_str());
+	ifstream file1(Config::textureGame);
+    ifstream file2(Config::textureGame_names);
 
     string str;
     vector<string> texturas;
@@ -134,7 +134,7 @@ bool Game::start()
     Render::drawRect(0, 0, Config::SCREEN_WIDTH-48, Config::SCREEN_HEIGHT, Render::black, true);
     Render::drawRect(Config::SCREEN_WIDTH-48, 0, 48, Config::SCREEN_HEIGHT, Render::gray, true);
 
-    ifstream file(Config::mapLevel1.c_str());
+    ifstream file(Config::mapLevel1);
 
     vector<string> mapa;
 
@@ -172,12 +172,6 @@ bool Game::start()
 					Render::drawText(xPos+4, yPos+Config::UN , 15, 15, Render::black, Config::font_prstartk, 32, "1");
 
 					break;
-				//case '.':
-				//case '  ':
-					//break;
-				//default:
-					//printf("Textura desconocida\n");
-					//cout<<mapa[i][j]<<endl;
 			}
     	}
     }

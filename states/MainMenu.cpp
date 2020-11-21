@@ -30,7 +30,7 @@ MainMenu::MainMenu()
 
 MainMenu::~MainMenu()
 {
-
+	stop();
 }
 
 void MainMenu::inputKey(string key)
@@ -39,10 +39,12 @@ void MainMenu::inputKey(string key)
 
 	if (currKey=="Down") {counter++;}
 	else if (currKey=="Up") {counter--;}
+
 }
 
 int MainMenu::task()
 {
+	int result = 0;
 	if (currKey=="Down" or currKey=="Up")
 	{
 		Render::drawRect(145, yPos, 29, 29, Render::black, true);
@@ -53,29 +55,20 @@ int MainMenu::task()
 
 		Render::drawObject(145, yPos, 29, 29, texturaMainMenu["ally"]);
 		Render::presentRender();
-
-		currKey="";
-		return 0;
 	}
 	else if (currKey=="Return")
 	{
-		currKey="";
 		if (counter%3==0)
-		{
-			return 1;
-		}
+			result = eONE_PLAYER;
 		else if (counter%3==1)
-		{
-			return 2;
-		}
+			result = eTWO_PLAYERS;
 		else if (counter%3==2)
-		{
-			return 3;
-		}
+			result = eEXIT;
 	}
-	else
-		currKey="";
-		return 4;
+
+	currKey=""; //Clean the string
+	SDL_Delay(100); //Delay to enhance the visualization while a key is pressed
+	return result;
 }
 
 bool MainMenu::start()
@@ -108,10 +101,9 @@ bool MainMenu::start()
 	return false;
 }
 
-
-
 bool MainMenu::stop()
 {
+	//TODO
 	//texturas
 	//cargar mapa
 	return false;
