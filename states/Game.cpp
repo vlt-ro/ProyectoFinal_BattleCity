@@ -60,30 +60,51 @@ void Game::gameOver()
 {
 	for(int i = 0; i<8; i++)
 	{
-		Render::drawRect(0, (Config::SCREEN_HEIGHT-28)-(i-1)*28, Config::SCREEN_WIDTH, 28, Render::black, true);
-		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(Config::SCREEN_HEIGHT-28)-i*28, 256, 28, Render::red, Config::font_prstartk, 68, "GAME OVER");
+		Render::drawRect(0, (Config::SCREEN_HEIGHT-26)-(i-1)*26, Config::SCREEN_WIDTH, 26, Render::black, true);
+		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(Config::SCREEN_HEIGHT-26)-i*26, 256, 26, Render::red, Config::font_prstartk, 68, "GAME OVER");
 
-		Render::drawRect(0, (28)+(i-1)*28, Config::SCREEN_WIDTH, 28, Render::black, true);
-		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(28)+i*28, 256, 28, Render::red, Config::font_prstartk, 68, "GAME OVER");
+		Render::drawRect(0, (26)+(i-1)*26, Config::SCREEN_WIDTH, 26, Render::black, true);
+		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(26)+i*26, 256, 26, Render::red, Config::font_prstartk, 68, "GAME OVER");
+
+		if (i==7)
+		{
+			Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
+			Render::drawText((Config::SCREEN_WIDTH-196-48)/2,8*26, 256, 26, Render::red, Config::font_prstartk, 68, "GAME OVER");
+		}
 
 		Render::presentRender();
 		SDL_Delay(250);
 	}
+
 	score();
 }
 void Game::score()
 {
-	for(int i = 0; i<8; i++)
+	Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
+	Render::presentRender();
+	SDL_Delay(250);
+
+    Render::drawText((Config::SCREEN_WIDTH-196)/2,10, 196, 28, Render::white, Config::font_prstartk, 68, "STAGE 1");
+    Render::drawText((Config::SCREEN_WIDTH-240)/2,53, 240, 12, Render::white, Config::font_prstartk, 58, "PLAYER				SCORE");
+    Render::drawRect((Config::SCREEN_WIDTH-300)/2, 75, 300, 2, Render::white, true);
+
+    Render::drawObject(107,93, 29, 29, texturaGame["ally"]);
+    Render::drawText(143, 98,27, 14, Render::white, Config::font_prstartk, 68, "x5");
+
+    Render::presentRender();
+	SDL_Delay(250);
+
+	int puntaje = 200;
+
+	for (int i=0; i<=puntaje;i++)
 	{
-		Render::drawRect(0, (Config::SCREEN_HEIGHT-28)-(i-1)*28, Config::SCREEN_WIDTH, 28, Render::black, true);
-		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(Config::SCREEN_HEIGHT-28)-i*28, 256, 28, Render::red, Config::font_prstartk, 68, "GAME OVER");
-
-		Render::drawRect(0, (28)+(i-1)*28, Config::SCREEN_WIDTH, 28, Render::black, true);
-		Render::drawText((Config::SCREEN_WIDTH-196-48)/2,(28)+i*28, 256, 28, Render::red, Config::font_prstartk, 68, "GAME OVER");
-
-		Render::presentRender();
-		SDL_Delay(250);
+	    Render::drawRect(266, 95, 40, 14, Render::black, true);
+	    Render::drawText(266, 95, 40, 14, Render::white, Config::font_prstartk, 68, std::to_string(i));
+	    Render::presentRender();
+	    SDL_Delay(20);
 	}
+
+
 }
 
 bool Game::start()
