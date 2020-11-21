@@ -8,6 +8,10 @@
 #ifndef STATES_STATE_H_
 #define STATES_STATE_H_
 
+#include <string>
+
+using std::string;
+
 class State
 {
 public:
@@ -19,8 +23,7 @@ public:
 	 * 		  is useful to pass characters read from the keyboard.
 	 * @param key
 	 */
-	virtual void inputKey(char key) = 0;
-
+	virtual void inputKey(string key) = 0;
 
 	//TODO: The next functions must be changed to a thread
 	/**

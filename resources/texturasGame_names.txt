@@ -1,0 +1,6 @@
+bricks
+concrete
+flag
+ally
+enemy_g
+flag_g

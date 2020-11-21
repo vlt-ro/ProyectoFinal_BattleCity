@@ -14,6 +14,11 @@ using std::string;
 
 SDL_Renderer* Render::render = nullptr;
 
+const SDL_Color Render::red = {0xFF, 0x33, 0x33, SDL_ALPHA_OPAQUE};
+const SDL_Color Render::white = {0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE};
+const SDL_Color Render::black = {0x00, 0x00, 0x00, SDL_ALPHA_OPAQUE};
+const SDL_Color Render::gray = {0x60, 0x60, 0x60, SDL_ALPHA_OPAQUE};
+
 Render::Render(SDL_Window *window)
 {
 	// Initialize the render
@@ -78,18 +83,87 @@ void Render::init(SDL_Window * window)
 	}
 }
 
-void Render::drawObject(GObject&)
-{
 
+SDL_Texture* Render::loadTexture( std::string path )
+{
+	//The final texture
+	SDL_Texture* newTexture = NULL;
+
+	//Load image at specified path
+	SDL_Surface* loadedSurface = IMG_Load( path.c_str() );
+	if( loadedSurface == NULL )
+	{
+		string s = string("Unable to create texture from:")+
+				   string(path.c_str());
+		throw s;
+	}
+	else
+	{
+		//Create texture from surface pixels
+		newTexture = SDL_CreateTextureFromSurface(render, loadedSurface);
+
+		if( newTexture == NULL )
+		{
+			string s = string("Unable to create texture from:")+
+					   string(path.c_str());
+			throw s;
+	    }
+
+		//Get rid of old loaded surface
+		SDL_FreeSurface( loadedSurface );
+	}
+
+	return newTexture;
 }
 
-void Render::drawText()
-{
 
+void Render::drawObject(int ObjectXPosition, int ObjectYPosition, int ObjectWidth, int ObjectHeight, SDL_Texture* Texture)
+{
+	SDL_Rect RectangleObject = {ObjectXPosition, ObjectYPosition, ObjectWidth, ObjectHeight};
+
+    SDL_RenderCopy(render, Texture, NULL, &RectangleObject);
 }
 
-void Render::drawRect(SDL_Rect)
+void Render::drawText(int TextXPosition, int TextYPosition, int TextWidth, int TextHeight, SDL_Color TextColor, string FontName, int FontSize, string Text )
 {
+	SDL_Rect RectangleText = {TextXPosition, TextYPosition, TextWidth, TextHeight};
+	SDL_Texture* TextTexture = nullptr;
+	SDL_Surface* TextSurface = nullptr;
+	TTF_Font* Font = TTF_OpenFont(FontName.c_str(), FontSize);
 
+	if(Font == nullptr)
+	{
+		string s = string("SDL_ttf could not open the font! SDL_ttf Error: %s\n")+
+				   string(TTF_GetError());
+		throw s;
+	}
+
+	TextSurface = TTF_RenderText_Solid(Font, Text.c_str(), TextColor);
+
+	TextTexture = SDL_CreateTextureFromSurface(render, TextSurface);
+
+	SDL_RenderCopy(render, TextTexture, NULL, &RectangleText);
+}
+
+void Render::drawRect(int RectangleXPosition, int RectangleYPosition, int RectangleWidth, int RectangleHeight, SDL_Color RectangleColor, bool Filled)
+{
+	// Create the rectangle to render
+	SDL_Rect Rectangle = {RectangleXPosition, RectangleYPosition, RectangleWidth, RectangleHeight};
+
+	// Set the rectangle color
+	SDL_SetRenderDrawColor(render, RectangleColor.r, RectangleColor.g, RectangleColor.b, RectangleColor.a);
+
+	// Render a filled rectangle
+	if(Filled)
+		SDL_RenderFillRect(render, &Rectangle);
+
+	// Render a unfilled rectangle
+	else
+		SDL_RenderDrawRect(render, &Rectangle);
+}
+
+void Render::presentRender()
+{
+	SDL_RenderPresent( render );
 }
 
