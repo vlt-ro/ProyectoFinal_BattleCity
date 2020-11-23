@@ -56,26 +56,47 @@ int Game::task()
 	//disparar enemigo
 
 	// aliados
+	SDL_Rect dim = ally.getDimension();
+	int direction;
+	bool move = true;
 	switch(currKey)
 	{
 	case SDLK_UP:
-		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eUp, Config::UN);
+		dim.y -= Config::UN;
+		direction = DGObject::eUp;
 		break;
 	case SDLK_DOWN:
-		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eDown, Config::UN);
+		dim.y += Config::UN;
+		direction = DGObject::eDown;
 		break;
 	case SDLK_LEFT:
-		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eLeft, Config::UN);
+		dim.x -= Config::UN;
+		direction = DGObject::eLeft;
 		break;
 	case SDLK_RIGHT:
-		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eRight, Config::UN);
+		dim.x += Config::UN;
+		direction = DGObject::eRight;
 		break;
+	default:
+		move=false;
+		direction = -1;
 	}
 	currKey = SDLK_UNKNOWN; //clear key
+
+	for(auto obs:obstacles)
+	{
+		if(Render::collide(dim, obs.getDimension()))
+		{
+			move = false;
+			break;
+		}
+	}
+
+	if(direction>=0)
+	{
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(direction, move? Config::UN : 0);
+	}
 
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();

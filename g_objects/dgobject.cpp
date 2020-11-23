@@ -8,6 +8,7 @@
 #include "dgobject.h"
 #include "../config.h"
 #include <SDL2/SDL.h>
+#include <algorithm>
 
 DGObject::DGObject(int h, int w, int x, int y):
 	GObject(h, w, x, y)
@@ -38,8 +39,8 @@ void DGObject::move(int step)
 			setPosition(d.x-step, d.y);
 		break;
 	case eRight:
-		//TODO: if(...)
-		setPosition(d.x+step, d.y);
+		if((d.x + step) <= (Config::SCREEN_WIDTH - 48 -d.w))
+			setPosition(d.x+step, d.y);
 		break;
 	}
 }
@@ -59,4 +60,19 @@ void DGObject::move(int dir, int step)
 
 	move(step);
 }
+
+//bool DGObject::collide(SDL_Rect *rect)
+//{
+//	SDL_Rect rect1 = getDimension();
+//    SDL_Rect intersect_rect;
+//
+//    intersect_rect.x = std::max(rect1.x, rect->x);
+//    intersect_rect.y = std::max(rect1.y, rect->y);
+//    intersect_rect.w = std::min(rect1.x + rect1.w, rect->x + rect->w) - intersect_rect.x;
+//    intersect_rect.h = std::min(rect1.y + rect1.h, rect->y + rect->h) - intersect_rect.y;
+//
+//    if(intersect_rect.w > 0 || intersect_rect.h > 0)
+//    	return true;
+//    return false;
+//}
 

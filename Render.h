@@ -29,6 +29,8 @@ public:
 	static void drawRect(SDL_Rect rect, SDL_Color RectangleColor, bool Filled);
 	static void presentRender();
 
+	static bool collide(SDL_Rect rect1, SDL_Rect rect2);
+
 	static const SDL_Color red; //Red
 	static const SDL_Color white; //Red
 	static const SDL_Color black; //Red

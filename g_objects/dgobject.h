@@ -21,6 +21,8 @@ public:
 	void move(int step);
 	void move(int direction, int step);
 
+//	bool collide(SDL_Rect *rect);
+
 protected:
 	SDL_Rect textures[4]; //Up, down, left and right orientation textures
 	int orientation;
