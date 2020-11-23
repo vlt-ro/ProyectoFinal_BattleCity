@@ -4,7 +4,6 @@
  * @date	Nov 13, 2020
  */
 
-#include <iostream>
 #include "g_object.h"
 
 GObject::GObject(size_t height, size_t width, int xPos, int yPos)
@@ -13,30 +12,19 @@ GObject::GObject(size_t height, size_t width, int xPos, int yPos)
 	rect.w = width;
 	rect.x = xPos;
 	rect.y = yPos;
-	this->image = nullptr;
-
-	std::cout << "GraphicElement constructor " <<height<<width<<xPos<<yPos << std::endl;
+	texture = {0,0,0,0};
 }
 
 GObject::GObject(SDL_Rect rect)
 {
 	this->rect = rect;
-	this->image = nullptr;
+	texture = {0,0,0,0};
 }
 
-void GObject::draw()
+void GObject::setPosition(int x,int y)
 {
-
-}
-
-void GObject::del()
-{
-
-}
-
-bool GObject::setPosition(SDL_Point pos)
-{
-	return false;
+	rect.x = x;
+	rect.y = y;
 }
 
 SDL_Point GObject::getPosition()
@@ -45,6 +33,20 @@ SDL_Point GObject::getPosition()
 	p.x = rect.x;
 	p.y = rect.y;
 	return p;
+}
+
+SDL_Rect GObject::getDimension()
+{
+	return rect;
+}
+
+const SDL_Rect* GObject::getTexture()
+{
+	return &texture;
+}
+void GObject::setTexture(const SDL_Rect *texture)
+{
+	this->texture = *texture;
 }
 
 

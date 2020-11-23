@@ -23,8 +23,10 @@ public:
 	static SDL_Texture* loadTexture(std::string path);
 	//static void drawObject(GObject &object);
 	static void drawObject(int ObjectXPosition, int ObjectYPosition, int ObjectWidth, int ObjectHeight, SDL_Texture* Texture);
+	static void drawObject(const SDL_Rect *source, int x, int y);
 	static void drawText(int TextXPosition, int TextYPosition, int TextWidth, int TextHeight, SDL_Color TextColor, string FontName, int FontSize, string Text);
 	static void drawRect(int RectangleXPosition, int RectangleYPosition, int RectangleWidth, int RectangleHeight, SDL_Color RectangleColor, bool Filled);
+	static void drawRect(SDL_Rect rect, SDL_Color RectangleColor, bool Filled);
 	static void presentRender();
 
 	static const SDL_Color red; //Red
@@ -34,6 +36,7 @@ public:
 
 private:
 	static SDL_Renderer *render;
+	static SDL_Texture *texture;
 };
 
 #endif /* RENDER_H_ */

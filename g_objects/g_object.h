@@ -33,28 +33,28 @@ public:
 
 	virtual ~GObject(){}; // to avoid bad performance while deleting a derived object
 
-	void draw();
-
-	void del();
-
 	/**
-	 * Try to set a new position
-	 * @param pos	Point with the position information
-	 * @return true if the new position could be
-	 * 		   setted, false otherwise.
+	 * Set a new position
 	 */
-	bool setPosition(SDL_Point pos);
+	void setPosition(int x,int y);
 
 	/**
 	 * return the current position of the graphic element
 	 */
 	SDL_Point getPosition();
 
-protected:
+	/**
+	 * Return an structure with the position and dimension
+	 * information
+	 */
+	SDL_Rect getDimension();
+
+	const SDL_Rect * getTexture();
+	void setTexture(const SDL_Rect *texture);
+
+private:
 	SDL_Rect rect; //rectangle with  dimension and position information
-
-	const void *image; // TODO: change to the correct pointer type
-
+	SDL_Rect texture; // Really it's not a texture
 };
 
 #endif /* GOBJECT_H_ */

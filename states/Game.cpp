@@ -20,12 +20,17 @@
 #include <utility>
 #include <stdio.h>
 
+#include "../g_objects/Brick.h"
+#include "../g_objects/Concrete.h"
+
 using std::string;
 using namespace std;
 
-Game::Game()
+Game::Game():
+		flag(0,0),
+		ally(0,0)
 {
-
+	currKey = SDLK_UNKNOWN;
 }
 
 Game::~Game()
@@ -35,10 +40,14 @@ Game::~Game()
 
 void Game::inputKey(string key)
 {
-	//switch(key)
-	// ... accion = algo
-	//
-
+	if(key == "Up")
+		currKey = SDLK_UP;
+	else if(key == "Down")
+		currKey = SDLK_DOWN;
+	else if(key == "Right")
+		currKey = SDLK_RIGHT;
+	else if(key == "Left")
+		currKey = SDLK_LEFT;
 }
 
 int Game::task()
@@ -47,12 +56,30 @@ int Game::task()
 	//disparar enemigo
 
 	// aliados
-	//switch(accion)
-	// ...
-	//
+	switch(currKey)
+	{
+	case SDLK_UP:
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eUp, Config::UN);
+		break;
+	case SDLK_DOWN:
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eDown, Config::UN);
+		break;
+	case SDLK_LEFT:
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eLeft, Config::UN);
+		break;
+	case SDLK_RIGHT:
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eRight, Config::UN);
+		break;
+	}
+	currKey = SDLK_UNKNOWN; //clear key
 
-	//actualizar pantalla
-
+	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
+	Render::presentRender();
+	SDL_Delay(100);
 	return 0;
 }
 
@@ -140,6 +167,7 @@ bool Game::start()
 
     while (getline(file,str)){ mapa.push_back(str);}
 
+    obstacles.clear();
     int xPos,yPos;
     for (int i = 0; i < mapa.size(); ++i)
     {
@@ -147,19 +175,20 @@ bool Game::start()
     	{
     		xPos = j*Config::UN;
     		yPos = i*Config::UN;
-
     		switch(mapa[i][j])
     		{
 				case 'b':
-					Render::drawObject(xPos, yPos, Config::UN, Config::UN, texturaGame["bricks"]);
+					obstacles.push_back(Brick(xPos,yPos));
+					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'c':
-					Render::drawObject(xPos, yPos, Config::UN, Config::UN, texturaGame["concrete"]);
+					obstacles.push_back(Concrete(xPos,yPos));
+					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'f':
-					Render::drawObject(xPos, yPos, 2*Config::UN, 2*Config::UN, texturaGame["flag"]);
+					flag.setPosition(xPos, yPos);
+					Render::drawObject(flag.getTexture(), xPos, yPos);
 					break;
-
 				case 'e':
 					Render::drawObject(xPos-6, yPos-6, Config::UN-2, Config::UN-2, texturaGame["enemy_g"]);
 					break;
@@ -170,19 +199,12 @@ bool Game::start()
 				case 'g':
 					Render::drawObject(xPos-6, yPos-6, 31, 26, texturaGame["flag_g"]);
 					Render::drawText(xPos+4, yPos+Config::UN , 15, 15, Render::black, Config::font_prstartk, 32, "1");
-
 					break;
 			}
     	}
     }
 
-    Render::presentRender();
-
-    SDL_Delay(1500);
-
-    gameOver();
-
-	return false;
+	return true;
 }
 
 bool Game::stop()

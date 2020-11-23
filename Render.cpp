@@ -9,10 +9,12 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
 #include <string>
+#include "config.h"
 
 using std::string;
 
 SDL_Renderer* Render::render = nullptr;
+SDL_Texture* Render::texture = nullptr;
 
 const SDL_Color Render::red = {0xFF, 0x33, 0x33, SDL_ALPHA_OPAQUE};
 const SDL_Color Render::white = {0xFF, 0xFF, 0xFF, SDL_ALPHA_OPAQUE};
@@ -21,31 +23,6 @@ const SDL_Color Render::gray = {0x60, 0x60, 0x60, SDL_ALPHA_OPAQUE};
 
 Render::Render(SDL_Window *window)
 {
-	// Initialize the render
-	render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
-	if(!render)
-	{
-		string s = string("Renderer could not be created! SDL Error: ") +=
-				   string(SDL_GetError());
-		throw s;
-	}
-
-	//Initialize PNG loading
-	int imgFlags = IMG_INIT_PNG;
-	if( !( IMG_Init( imgFlags ) & imgFlags ) )
-	{
-		string s = string("SDL_image could not initialize! SDL_image Error: ") +
-				   string(IMG_GetError());
-		throw s;
-	}
-
-	//Initialize font
-	if( TTF_Init()==-1 )
-	{
-		string s = string("TTF_Init could not initialize! SDL_ttf Error: %s\n")+
-				   string(TTF_GetError());
-		throw s;
-	}
 
 }
 
@@ -57,7 +34,8 @@ Render::~Render()
 void Render::init(SDL_Window * window)
 {
 	// Initialize the render
-	render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
+	if(!render)
+		render = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 	if(!render)
 	{
 		string s = string("Renderer could not be created! SDL Error: ") +=
@@ -77,10 +55,13 @@ void Render::init(SDL_Window * window)
 	//Initialize font
 	if( TTF_Init()==-1 )
 	{
-		string s = string("TTF_Init could not initialize! SDL_ttf Error: %s\n")+
+		string s = string("TTF_Init could not initialize! SDL_ttf Error: ")+
 				   string(TTF_GetError());
 		throw s;
 	}
+
+	if(!texture)
+		texture = loadTexture(Config::path_global_texture);
 }
 
 
@@ -124,6 +105,12 @@ void Render::drawObject(int ObjectXPosition, int ObjectYPosition, int ObjectWidt
     SDL_RenderCopy(render, Texture, NULL, &RectangleObject);
 }
 
+void Render::drawObject(const SDL_Rect *source, int x, int y)
+{
+	SDL_Rect dest = {x, y, source->w, source->h};
+	SDL_RenderCopy(render,texture,source,&dest);
+}
+
 void Render::drawText(int TextXPosition, int TextYPosition, int TextWidth, int TextHeight, SDL_Color TextColor, string FontName, int FontSize, string Text )
 {
 	SDL_Rect RectangleText = {TextXPosition, TextYPosition, TextWidth, TextHeight};
@@ -160,6 +147,11 @@ void Render::drawRect(int RectangleXPosition, int RectangleYPosition, int Rectan
 	// Render a unfilled rectangle
 	else
 		SDL_RenderDrawRect(render, &Rectangle);
+}
+
+void Render::drawRect(SDL_Rect rect, SDL_Color RectangleColor, bool Filled)
+{
+	drawRect(rect.x, rect.y, rect.w, rect.h, RectangleColor, Filled);
 }
 
 void Render::presentRender()
