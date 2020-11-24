@@ -30,3 +30,7 @@ const SDL_Rect Config::txAlly[] = { {40*UN, 0, 2*UN, 2*UN}, //UP
 									{46*UN, 0, 2*UN, 2*UN}, //Left
 									{42*UN, 0, 2*UN, 2*UN}};//Right
 const SDL_Rect Config::txEnemy = {0,0,2*UN,2*UN};
+const SDL_Rect Config::txBullet[] = { {945, 128, 8, 8}, //UP
+									  {961, 128, 8, 8}, //Down
+									  {968, 128, 8, 8}, //Left
+									  {952, 128, 8, 8}};//Right

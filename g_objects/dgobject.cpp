@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <map>
 #include <iterator>
-
+#include <iostream>
 using namespace std;
 
 DGObject::DGObject(int h, int w, int x, int y):
@@ -87,7 +87,6 @@ void DGObject::move(int direction, int step, multimap <string, GObject> objects 
 	default:
 		move_=false;
 	}
-
 	for (itr = objects.begin(); itr != objects.end(); ++itr)
 	{
 		if(	collide(dim,itr->second.getDimension()))
@@ -98,6 +97,7 @@ void DGObject::move(int direction, int step, multimap <string, GObject> objects 
 	}
 
 	move(direction, move_? step : 0);
+
 }
 
 bool DGObject::collide(SDL_Rect rect1, SDL_Rect rect2)

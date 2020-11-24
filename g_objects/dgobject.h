@@ -10,7 +10,7 @@
 #include "g_object.h"
 #include <map>
 #include <iterator>
-
+#include <SDL2/SDL.h>
 using namespace std;
 
 class DGObject: public GObject
@@ -28,9 +28,10 @@ public:
 	//bool collide(SDL_Rect *rect);
 	bool collide(SDL_Rect rect1, SDL_Rect rect2);
 
+
 protected:
 	SDL_Rect textures[4]; //Up, down, left and right orientation textures
-	int orientation;
+	int orientation = 10;
 	multimap <string, GObject> :: iterator itr;
 };
 

@@ -71,7 +71,7 @@ void BattleCity::start()
                 }
             }
 
-            //TODO: read returned value
+
             state = currState->task();
 
             switch(state)

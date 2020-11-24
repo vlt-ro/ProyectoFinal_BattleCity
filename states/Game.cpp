@@ -22,6 +22,7 @@
 #include <iterator>
 #include "../g_objects/Brick.h"
 #include "../g_objects/Concrete.h"
+#include "../g_objects/Bullet.h"
 
 using std::string;
 using namespace std;
@@ -48,6 +49,8 @@ void Game::inputKey(string key)
 		currKey = SDLK_RIGHT;
 	else if(key == "Left")
 		currKey = SDLK_LEFT;
+	else if(key == "Space")
+		currKey = SDLK_SPACE;
 }
 
 int Game::task()
@@ -57,26 +60,71 @@ int Game::task()
 
 	// aliados
 
-	int direction;
+	//int direction;
 
 	switch(currKey)
 	{
 	case SDLK_UP:
 		direction = DGObject::eUp;
+		direction_temp = direction;
 		break;
 	case SDLK_DOWN:
 		direction = DGObject::eDown;
+		direction_temp = direction;
 		break;
 	case SDLK_LEFT:
 		direction = DGObject::eLeft;
+		direction_temp = direction;
 		break;
 	case SDLK_RIGHT:
 		direction = DGObject::eRight;
+		direction_temp = direction;
 		break;
+	case SDLK_SPACE:
+		bullet_ = true;
+		direction_bullet = direction_temp;
+		/*if (!bullet_)
+		{
+			bullet_ally.setPosition(ally.getPosition().x+8,ally.getPosition().y+8);
+			bullet_ = true;
+			direction_bullet = direction_temp;
+		}*/
+		break;
+
 	default:
 		direction = -1;
 	}
 	currKey = SDLK_UNKNOWN; //clear key
+
+	SDL_Rect obstacle={0,0,0,0};
+	if (bullet_)
+	{
+		bullet_ally.push_back(Bullet(ally.getPosition().x+9,ally.getPosition().y+9,direction_bullet));
+		bullet_ = false;
+	}
+
+	for (int i=0; i<bullet_ally.size();i++)
+	{
+		Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
+		obstacle = bullet_ally[i].move(Config::UN,objects );
+		Render::drawObject(bullet_ally[i].getTexture(), bullet_ally[i].getPosition().x, bullet_ally[i].getPosition().y);
+
+		if (obstacle.w==-1 )
+		{
+			Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
+			bullet_ally.erase(bullet_ally.begin() + i);
+		}
+		else if (obstacle.w>0 and obstacle.h>0 )
+		{
+			Render::drawRect(obstacle,Render::black,true);
+			Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
+			bullet_ally.erase(bullet_ally.begin() + i);
+		}
+		else if (bullet_ally[i].getDimension().x==0 )
+		{
+			bullet_ally.erase(bullet_ally.begin() + i);
+		}
+	}
 
 	Render::drawRect(ally.getDimension(),Render::black,true);
 	ally.move(direction, Config::UN, objects );
@@ -182,12 +230,12 @@ bool Game::start()
     		switch(mapa[i][j])
     		{
 				case 'b':
-					objects.insert(pair <string, GObject> ("obstacles", Brick(xPos,yPos)));
+					objects.insert(pair <string, GObject> ("bricks", Brick(xPos,yPos)));
 					obstacles.push_back(Brick(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'c':
-					objects.insert(pair <string, GObject> ("obstacles", Concrete(xPos,yPos)));
+					objects.insert(pair <string, GObject> ("concrete", Concrete(xPos,yPos)));
 					obstacles.push_back(Concrete(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;

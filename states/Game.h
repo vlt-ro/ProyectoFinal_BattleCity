@@ -19,6 +19,7 @@
 #include "../g_objects/g_object.h"
 #include "../g_objects/Flag.h"
 #include "../g_objects/ally.h"
+#include "../g_objects/Bullet.h"
 
 using namespace std;
 
@@ -43,7 +44,13 @@ private:
 	multimap <string, GObject> :: iterator itr;
 	Flag flag;
 	Ally ally;
+
+	vector <Bullet> bullet_ally;
 	SDL_Keycode currKey;
+	bool bullet_ = false;
+	int direction = -1;
+	int direction_bullet = -1;
+	int direction_temp = DGObject::eUp;
 };
 
 #endif /* STATES_GAME_H_ */
