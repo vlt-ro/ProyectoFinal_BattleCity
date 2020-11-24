@@ -1,9 +1,9 @@
 #ifndef G_OBJECTS_ENEMY_H_
 #define G_OBJECTS_ENEMY_H_
 
-#include "dgobject.h"
+#include "Tank.h"
 
-class Enemy: public DGObject
+class Enemy: public Tank
 {
 public:
 	Enemy(int x, int y);

@@ -55,40 +55,29 @@ void Game::inputKey(string key)
 
 int Game::task()
 {
-	//mover enemigoSDL_Rect rect
-	//disparar enemigo
-
-	// aliados
-
-	//int direction;
-
+	Bullet *b;
 	switch(currKey)
 	{
 	case SDLK_UP:
-		direction = DGObject::eUp;
-		direction_temp = direction;
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eUp, Config::UN/2, objects );
 		break;
 	case SDLK_DOWN:
-		direction = DGObject::eDown;
-		direction_temp = direction;
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eDown, Config::UN/2, objects );
 		break;
 	case SDLK_LEFT:
-		direction = DGObject::eLeft;
-		direction_temp = direction;
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eLeft, Config::UN/2, objects );
 		break;
 	case SDLK_RIGHT:
-		direction = DGObject::eRight;
-		direction_temp = direction;
+		Render::drawRect(ally.getDimension(),Render::black,true);
+		ally.move(DGObject::eRight, Config::UN/2, objects );
 		break;
 	case SDLK_SPACE:
-		bullet_ = true;
-		direction_bullet = direction_temp;
-		/*if (!bullet_)
-		{
-			bullet_ally.setPosition(ally.getPosition().x+8,ally.getPosition().y+8);
-			bullet_ = true;
-			direction_bullet = direction_temp;
-		}*/
+		b = ally.shoot();
+		if(b)
+			bullet_ally.push_back(b);
 		break;
 
 	default:
@@ -97,37 +86,31 @@ int Game::task()
 	currKey = SDLK_UNKNOWN; //clear key
 
 	SDL_Rect obstacle={0,0,0,0};
-	if (bullet_)
-	{
-		bullet_ally.push_back(Bullet(ally.getPosition().x+9,ally.getPosition().y+9,direction_bullet));
-		bullet_ = false;
-	}
 
 	for (int i=0; i<bullet_ally.size();i++)
 	{
-		Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
-		obstacle = bullet_ally[i].move(Config::UN,objects );
-		Render::drawObject(bullet_ally[i].getTexture(), bullet_ally[i].getPosition().x, bullet_ally[i].getPosition().y);
+		Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
+		obstacle = bullet_ally[i]->move(Config::UN,objects );
+		Render::drawObject(bullet_ally[i]->getTexture(), bullet_ally[i]->getPosition().x, bullet_ally[i]->getPosition().y);
 
 		if (obstacle.w==-1 )
 		{
-			Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
+			Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
 			bullet_ally.erase(bullet_ally.begin() + i);
 		}
 		else if (obstacle.w>0 and obstacle.h>0 )
 		{
 			Render::drawRect(obstacle,Render::black,true);
-			Render::drawRect(bullet_ally[i].getDimension(),Render::black,true);
+			Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
 			bullet_ally.erase(bullet_ally.begin() + i);
 		}
-		else if (bullet_ally[i].getDimension().x==0 )
+		else if (bullet_ally[i]->getDimension().x==0 )
 		{
+			delete bullet_ally[i]; //Free memory
 			bullet_ally.erase(bullet_ally.begin() + i);
 		}
 	}
 
-	Render::drawRect(ally.getDimension(),Render::black,true);
-	ally.move(direction, Config::UN, objects );
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();
 	SDL_Delay(100);

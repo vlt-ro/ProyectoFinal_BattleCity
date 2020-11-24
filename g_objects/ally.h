@@ -8,9 +8,9 @@
 #ifndef G_OBJECTS_ALLY_H_
 #define G_OBJECTS_ALLY_H_
 
-#include "dgobject.h"
+#include "Tank.h"
 
-class Ally: public DGObject
+class Ally: public Tank
 {
 public:
 	Ally(int x, int y);

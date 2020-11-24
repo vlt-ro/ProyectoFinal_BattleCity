@@ -9,7 +9,7 @@
 #include "../config.h"
 
 Ally::Ally(int x, int y):
-	DGObject(Config::txAlly[0].h, Config::txAlly[0].w, x, y)
+	Tank(Config::txAlly[0].h, Config::txAlly[0].w, x, y)
 {
 	/* load textures */
 	for(int i=0; i<4; i++)

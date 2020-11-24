@@ -9,11 +9,15 @@
 #define G_OBJECTS_TANK_H_
 
 #include "dgobject.h"
+#include "Bullet.h"
 
-class Tank: public DGObject {
+class Tank: public DGObject
+{
 public:
-	Tank();
+	Tank(size_t height, size_t width, int xPos, int yPos);
 	virtual ~Tank();
+
+	Bullet* shoot();
 };
 
 #endif /* G_OBJECTS_TANK_H_ */

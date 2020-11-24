@@ -45,7 +45,7 @@ private:
 	Flag flag;
 	Ally ally;
 
-	vector <Bullet> bullet_ally;
+	vector <Bullet*> bullet_ally;
 	SDL_Keycode currKey;
 	bool bullet_ = false;
 	int direction = -1;

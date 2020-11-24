@@ -25,11 +25,14 @@ const string Config::path_global_texture = "resources/img/texture.png";
 const SDL_Rect Config::txBrick = {29*UN*2, 0, UN, UN};
 const SDL_Rect Config::txConcrete = {29*UN*2, 9*UN, UN, UN};
 const SDL_Rect Config::txFlag = {59*UN,0,2*UN,2*UN};
-const SDL_Rect Config::txAlly[] = { {40*UN, 0, 2*UN, 2*UN}, //UP
-									{44*UN, 0, 2*UN, 2*UN}, //Down
-									{46*UN, 0, 2*UN, 2*UN}, //Left
-									{42*UN, 0, 2*UN, 2*UN}};//Right
-const SDL_Rect Config::txEnemy = {0,0,2*UN,2*UN};
+const SDL_Rect Config::txAlly[] = { {40*UN, 0, 32, 32}, //UP
+									{44*UN, 0, 32, 32}, //Down
+									{46*UN, 0, 32, 32}, //Left
+									{42*UN, 0, 32, 32}};//Right
+const SDL_Rect Config::txEnemy[] = { {8*UN,  0, 32, 32}, //UP
+									 {12*UN, 0, 32, 32}, //Down
+									 {14*UN, 0, 32, 32}, //Left
+									 {10*UN, 0, 32, 32}};//Right
 const SDL_Rect Config::txBullet[] = { {945, 128, 8, 8}, //UP
 									  {961, 128, 8, 8}, //Down
 									  {968, 128, 8, 8}, //Left

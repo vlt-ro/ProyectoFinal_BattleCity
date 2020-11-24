@@ -34,7 +34,7 @@ public:
     static const SDL_Rect txConcrete;
     static const SDL_Rect txFlag;
     static const SDL_Rect txAlly[];
-    static const SDL_Rect txEnemy;
+    static const SDL_Rect txEnemy[];
     static const SDL_Rect txBullet[];
 };
 
