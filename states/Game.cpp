@@ -19,7 +19,7 @@
 #include <vector>
 #include <utility>
 #include <stdio.h>
-
+#include <iterator>
 #include "../g_objects/Brick.h"
 #include "../g_objects/Concrete.h"
 
@@ -52,55 +52,38 @@ void Game::inputKey(string key)
 
 int Game::task()
 {
-	//mover enemigo
+	//mover enemigoSDL_Rect rect
 	//disparar enemigo
 
 	// aliados
-	SDL_Rect dim = ally.getDimension();
+
 	int direction;
-	bool move = true;
+
 	switch(currKey)
 	{
 	case SDLK_UP:
-		dim.y -= Config::UN;
 		direction = DGObject::eUp;
 		break;
 	case SDLK_DOWN:
-		dim.y += Config::UN;
 		direction = DGObject::eDown;
 		break;
 	case SDLK_LEFT:
-		dim.x -= Config::UN;
 		direction = DGObject::eLeft;
 		break;
 	case SDLK_RIGHT:
-		dim.x += Config::UN;
 		direction = DGObject::eRight;
 		break;
 	default:
-		move=false;
 		direction = -1;
 	}
 	currKey = SDLK_UNKNOWN; //clear key
 
-	for(auto obs:obstacles)
-	{
-		if(Render::collide(dim, obs.getDimension()))
-		{
-			move = false;
-			break;
-		}
-	}
-
-	if(direction>=0)
-	{
-		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(direction, move? Config::UN : 0);
-	}
-
+	Render::drawRect(ally.getDimension(),Render::black,true);
+	ally.move(direction, Config::UN, objects );
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();
 	SDL_Delay(100);
+
 	return 0;
 }
 
@@ -199,14 +182,17 @@ bool Game::start()
     		switch(mapa[i][j])
     		{
 				case 'b':
+					objects.insert(pair <string, GObject> ("obstacles", Brick(xPos,yPos)));
 					obstacles.push_back(Brick(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'c':
+					objects.insert(pair <string, GObject> ("obstacles", Concrete(xPos,yPos)));
 					obstacles.push_back(Concrete(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'f':
+					objects.insert(pair <string, GObject> ("flag", Flag(xPos,yPos)));
 					flag.setPosition(xPos, yPos);
 					Render::drawObject(flag.getTexture(), xPos, yPos);
 					break;

@@ -159,7 +159,7 @@ void Render::presentRender()
 	SDL_RenderPresent( render );
 }
 
-bool Render::collide(SDL_Rect rect1, SDL_Rect rect2)
+/*bool Render::collide(SDL_Rect rect1, SDL_Rect rect2)
 {
     SDL_Rect intersect_rect;
 
@@ -171,5 +171,4 @@ bool Render::collide(SDL_Rect rect1, SDL_Rect rect2)
     if(intersect_rect.w > 0 && intersect_rect.h > 0)
     	return true;
     return false;
-}
-
+}*/

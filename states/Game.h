@@ -12,6 +12,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include <iterator>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_ttf.h>
@@ -38,6 +39,8 @@ public:
 private:
 	map<string, SDL_Texture*> texturaGame;
 	vector<GObject> obstacles;
+	multimap <string, GObject> objects;
+	multimap <string, GObject> :: iterator itr;
 	Flag flag;
 	Ally ally;
 	SDL_Keycode currKey;

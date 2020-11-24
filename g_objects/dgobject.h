@@ -8,6 +8,10 @@
 #define G_OBJECTS_DGOBJECT_H_
 
 #include "g_object.h"
+#include <map>
+#include <iterator>
+
+using namespace std;
 
 class DGObject: public GObject
 {
@@ -20,12 +24,14 @@ public:
 
 	void move(int step);
 	void move(int direction, int step);
-
-//	bool collide(SDL_Rect *rect);
+	void move(int direction, int step, multimap <string, GObject> objects );
+	//bool collide(SDL_Rect *rect);
+	bool collide(SDL_Rect rect1, SDL_Rect rect2);
 
 protected:
 	SDL_Rect textures[4]; //Up, down, left and right orientation textures
 	int orientation;
+	multimap <string, GObject> :: iterator itr;
 };
 
 #endif /* G_OBJECTS_DGOBJECT_H_ */
