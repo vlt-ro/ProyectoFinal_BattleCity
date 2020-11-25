@@ -90,7 +90,7 @@ void BattleCity::start()
             		quit = true;
             		break;
             	case Game::eVICTORY:
-            	case Game::eFAIL:
+            	case Game::eDEFEAT:
 					/* Update current state */
 					delete currState;
 					currState = new MainMenu;

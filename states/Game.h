@@ -32,8 +32,9 @@ public:
 	 */
 	enum
 	{
+		eCONTINUE = 0,
 		eVICTORY = 0x05,///< Mode "one player" was selected
-		eFAIL,      ///< Mode "Two player" was selected
+		eDEFEAT,      ///< Mode "Two player" was selected
 	};
 
 	Game();
@@ -42,6 +43,8 @@ public:
 	// Inherit methods
 	void inputKey(string key);
 	int task();
+	void destroyEnemy();
+	void deathCounter();
 	void gameOver();
 	void score();
 	bool start();
@@ -51,7 +54,7 @@ private:
 	map<string, SDL_Texture*> texturaGame;
 	vector<GObject*> obstacles;
 	Ally *ally;
-
+	int status = eCONTINUE;
 	vector <Bullet*> bullets;
 	SDL_Keycode currKey;
 	bool bullet_ = false;
@@ -60,6 +63,7 @@ private:
 	int direction_temp = DGObject::eUp;
 
 	int n_enemy = 0;
+	vector<vector<int>> enemy_counter;
 	int n_lifes = 10;
 	int puntaje = 0;
 	bool death = false;
