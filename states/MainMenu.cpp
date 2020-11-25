@@ -73,6 +73,8 @@ int MainMenu::task()
 
 bool MainMenu::start()
 {
+	Render::drawRect(0,0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
+
 	ifstream file1(Config::textureMainMenu.c_str());
     ifstream file2(Config::textureMainMenu_names.c_str());
 

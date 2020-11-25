@@ -97,6 +97,9 @@ int Game::task()
 		{
 			if(obstacles[ind]->getID() != Config::CONCRETE)
 				destroyObject(ind);
+
+			if(obstacles[ind]->getID() == Config::ENEMY)
+				destroyEnemy();
 		}
 
 		if(oldPos.x == b->getPosition().x && oldPos.y == b->getPosition().y)
@@ -129,21 +132,39 @@ int Game::task()
 
 	}
 
-	if(n_enemy==3)
-	{
-		puntaje = 10;
-		score();
-		return eVICTORY;
-	}
+	deathCounter(); // Actualiza si murio y si ya perdio todas las vidas
+
 	if (n_enemytemp<1)
 	{
 	    obstacles.push_back(new Enemy(0,48));
-	    n_enemy += 1;
-	    //Render::drawObject(obstacles.back()->getTexture(), 0, 48);
 	}
 
-	//death = true;
+	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
+	Render::presentRender();
+	SDL_Delay(70);
 
+	return status;
+}
+
+void Game::destroyEnemy()
+{
+	n_enemy = enemy_counter.size();
+	if(n_enemy==1)
+	{
+		puntaje = 10;
+		score();
+		status = eVICTORY;
+	}
+	else
+	{
+		Render::drawRect(enemy_counter[n_enemy-1][0],enemy_counter[n_enemy-1][1], 14, 14, Render::gray, true);
+		enemy_counter.pop_back();
+		status = eCONTINUE;
+	}
+}
+
+void Game::deathCounter()
+{
 	if(death)
 	{
 		death = false;
@@ -152,18 +173,17 @@ int Game::task()
 		if (n_lifes == 0)
 		{
 			gameOver();
-			return eFAIL;
+			status = eDEFEAT;
+			//TODO: Destruir el aliado
 		}
-		Render::drawRect(27*Config::UN+8, 12*Config::UN-8, 16, 16, Render::gray, true);
-		Render::drawText(27*Config::UN+8, 12*Config::UN-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
-
+		else
+		{
+			Render::drawRect(27*Config::UN+8, 12*Config::UN-8, 16, 16, Render::gray, true);
+			Render::drawText(27*Config::UN+8, 12*Config::UN-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
+			//TODO: Generar nuevo aliado
+			status = eCONTINUE;
+		}
 	}
-
-	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
-	Render::presentRender();
-	SDL_Delay(70);
-
-	return 0;
 }
 
 void Game::gameOver()
@@ -190,6 +210,8 @@ void Game::gameOver()
 }
 void Game::score()
 {
+	puntaje = n_lifes*50 + (13-enemy_counter.size())*20;
+
 	Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
 	Render::presentRender();
 	SDL_Delay(250);
@@ -199,20 +221,21 @@ void Game::score()
     Render::drawRect((Config::SCREEN_WIDTH-300)/2, 75, 300, 2, Render::white, true);
 
     Render::drawObject(107,93, 29, 29, texturaGame["ally"]);
-    Render::drawText(143, 98,27, 14, Render::white, Config::font_prstartk, 68, "x5");
+    Render::drawText(143, 98,27, 14, Render::white, Config::font_prstartk, 68, "x"+to_string(n_lifes));
 
     Render::presentRender();
 	SDL_Delay(250);
 
-	for (int i=0; i<=puntaje;i++)
+	for (int i=0; i<=puntaje;i+=10)
 	{
 	    Render::drawRect(266, 95, 40, 14, Render::black, true);
 	    Render::drawText(266, 95, 40, 14, Render::white, Config::font_prstartk, 68, std::to_string(i));
 	    Render::presentRender();
 	    SDL_Delay(20);
 	}
-	SDL_Delay(1000);
+	SDL_Delay(2000);
 	Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
+
 }
 
 bool Game::start()
@@ -274,6 +297,7 @@ bool Game::start()
 					break;
 				case 'e':
 					Render::drawObject(xPos-6, yPos-6, Config::UN-2, Config::UN-2, texturaGame["enemy_g"]);
+					enemy_counter.push_back({xPos-6, yPos-6});
 					break;
 				case 'a':
 					Render::drawObject(xPos-10, yPos-10, Config::UN, Config::UN, texturaGame["ally"]);
