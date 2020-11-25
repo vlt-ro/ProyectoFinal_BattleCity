@@ -22,10 +22,10 @@ public:
 	DGObject(int h, int w, int x, int y);
 	virtual ~DGObject();
 
-	void move(int step);
-	void move(int direction, int step);
-	void move(int direction, int step, multimap <string, GObject> objects );
-	//bool collide(SDL_Rect *rect);
+	bool move(int step);
+	bool move(int direction, int step);
+	bool move(int direction, int step, multimap <string, GObject> &objects );
+	bool collide(SDL_Rect rect);
 	bool collide(SDL_Rect rect1, SDL_Rect rect2);
 
 

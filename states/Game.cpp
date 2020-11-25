@@ -77,7 +77,7 @@ int Game::task()
 	case SDLK_SPACE:
 		b = ally.shoot();
 		if(b)
-			bullet_ally.push_back(b);
+			bullets.push_back(b);
 		break;
 
 	default:
@@ -87,28 +87,65 @@ int Game::task()
 
 	SDL_Rect obstacle={0,0,0,0};
 
-	for (int i=0; i<bullet_ally.size();i++)
-	{
-		Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
-		obstacle = bullet_ally[i]->move(Config::UN,objects );
-		Render::drawObject(bullet_ally[i]->getTexture(), bullet_ally[i]->getPosition().x, bullet_ally[i]->getPosition().y);
+//	for (int i=0; i<bullets.size();i++)
+//	{
+//		Render::drawRect(bullets[i]->getDimension(),Render::black,true);
+//		obstacle = bullets[i]->move(Config::UN,objects );
+//		Render::drawObject(bullets[i]->getTexture(), bullets[i]->getPosition().x, bullets[i]->getPosition().y);
+//
+//		if (obstacle.w==-1 )
+//		{
+//			Render::drawRect(bullets[i]->getDimension(),Render::black,true);
+//			bullets.erase(bullets.begin() + i);
+//		}
+//		else if (obstacle.w>0 and obstacle.h>0 )
+//		{
+//			Render::drawRect(obstacle,Render::black,true);
+//			Render::drawRect(bullets[i]->getDimension(),Render::black,true);
+//			bullets.erase(bullets.begin() + i);
+//		}
+//		else if (bullets[i]->getDimension().x==0 )
+//		{
+//			delete bullets[i]; //Free memory
+//			bullets.erase(bullets.begin() + i);
+//		}
+//	}
 
-		if (obstacle.w==-1 )
+	for(auto bIt = bullets.begin(); bIt < bullets.end(); bIt++)
+	{
+		auto &b = (*bIt);
+		bool delBullet = false;
+		auto oldDim = b->getDimension();
+		if(!b->move(Config::UN))
 		{
-			Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
-			bullet_ally.erase(bullet_ally.begin() + i);
+			Render::drawRect(b->getDimension(), Render::black, true);
+			delBullet = true;
 		}
-		else if (obstacle.w>0 and obstacle.h>0 )
+
+		/* Check for collisions */
+		for(auto obsIt = objects.begin(); obsIt != objects.end(); ++obsIt)
 		{
-			Render::drawRect(obstacle,Render::black,true);
-			Render::drawRect(bullet_ally[i]->getDimension(),Render::black,true);
-			bullet_ally.erase(bullet_ally.begin() + i);
+			auto &obs = *obsIt;
+			if(b->collide(obs.second.getDimension()))
+			{
+				delBullet = true;
+				if(obs.first != "concrete" && obs.first != "ally")
+				{
+					Render::drawRect(obs.second.getDimension(),Render::black,true);
+					objects.erase(obsIt);
+				}
+			}
 		}
-		else if (bullet_ally[i]->getDimension().x==0 )
+
+		if(delBullet)
 		{
-			delete bullet_ally[i]; //Free memory
-			bullet_ally.erase(bullet_ally.begin() + i);
+			delete b;
+			bullets.erase(bIt);
+			continue;
 		}
+
+		Render::drawRect(oldDim, Render::black, true);
+		drawObject(*b);
 	}
 
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
@@ -249,5 +286,11 @@ bool Game::stop()
 {
 	//limpiar (destruir) _todo
 	return false;
+}
+
+
+void Game::drawObject(GObject &obj)
+{
+	Render::drawObject(obj.getTexture(), obj.getPosition().x, obj.getPosition().y);
 }
 

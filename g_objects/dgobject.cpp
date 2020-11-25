@@ -24,32 +24,47 @@ DGObject::~DGObject()
 {
 }
 
-void DGObject::move(int step)
+bool DGObject::move(int step)
 {
+	bool r = false;
 	SDL_Rect d = getDimension();
 
 	switch(orientation)
 	{
 	case eUp:
 		if(d.y-step >= 0)
+		{
 			setPosition(d.x, d.y - step);
+			r = true;
+		}
 		break;
 	case eDown:
 		if(d.y + step <= Config::SCREEN_HEIGHT - d.h)
+		{
 			setPosition(d.x, d.y + step);
+			r = true;
+		}
 		break;
 	case eLeft:
 		if(d.x-step >= 0)
+		{
 			setPosition(d.x-step, d.y);
+			r = true;
+		}
 		break;
 	case eRight:
 		if((d.x + step) <= (Config::SCREEN_WIDTH - 48 -d.w))
+		{
 			setPosition(d.x+step, d.y);
+			r = true;
+		}
 		break;
 	}
+
+	return r;
 }
 
-void DGObject::move(int dir, int step)
+bool DGObject::move(int dir, int step)
 {
 	if(dir != orientation)
 	{
@@ -59,17 +74,18 @@ void DGObject::move(int dir, int step)
 			orientation = dir;
 		}
 		else
-			return;
+			return false;
 	}
 
-	move(step);
+	return move(step);
 }
 
 
-void DGObject::move(int direction, int step, multimap <string, GObject> objects )
+bool DGObject::move(int direction, int step, multimap <string, GObject> &objects )
 {
 	bool move_ = true;
 	SDL_Rect dim = getDimension();
+
 	switch(direction)
 	{
 	case eUp:
@@ -79,14 +95,15 @@ void DGObject::move(int direction, int step, multimap <string, GObject> objects 
 		dim.y += step;
 		break;
 	case eLeft:
-		dim.x -= step;
+		dim.x -=step;
 		break;
 	case eRight:
 		dim.x += step;
 		break;
 	default:
-		move_=false;
+		move_ = false;
 	}
+
 	for (itr = objects.begin(); itr != objects.end(); ++itr)
 	{
 		if(	collide(dim,itr->second.getDimension()))
@@ -96,13 +113,11 @@ void DGObject::move(int direction, int step, multimap <string, GObject> objects 
 		}
 	}
 
-	move(direction, move_? step : 0);
-
+	return move(direction, move_? step : 0);
 }
 
 bool DGObject::collide(SDL_Rect rect1, SDL_Rect rect2)
 {
-
     SDL_Rect intersect_rect;
 
     intersect_rect.x = std::max(rect1.x, rect2.x);
@@ -114,18 +129,9 @@ bool DGObject::collide(SDL_Rect rect1, SDL_Rect rect2)
     	return true;
     return false;
 }
-//bool DGObject::collide(SDL_Rect *rect)
-//{
-//	SDL_Rect rect1 = getDimension();
-//    SDL_Rect intersect_rect;
-//
-//    intersect_rect.x = std::max(rect1.x, rect->x);
-//    intersect_rect.y = std::max(rect1.y, rect->y);
-//    intersect_rect.w = std::min(rect1.x + rect1.w, rect->x + rect->w) - intersect_rect.x;
-//    intersect_rect.h = std::min(rect1.y + rect1.h, rect->y + rect->h) - intersect_rect.y;
-//
-//    if(intersect_rect.w > 0 || intersect_rect.h > 0)
-//    	return true;
-//    return false;
-//}
+
+bool DGObject::collide(SDL_Rect rect)
+{
+   return collide(getDimension(), rect);
+}
 

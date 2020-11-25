@@ -18,7 +18,7 @@ class Bullet: public DGObject
 {
 public:
 	Bullet(int x, int y,int direction);
-	SDL_Rect move(int step, multimap <string, GObject> &objects );
+//	SDL_Rect move(int step, multimap <string, GObject> &objects );
 	virtual ~Bullet();
 protected:
 	int direction = -1;

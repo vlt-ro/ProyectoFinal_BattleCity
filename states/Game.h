@@ -45,12 +45,15 @@ private:
 	Flag flag;
 	Ally ally;
 
-	vector <Bullet*> bullet_ally;
+	vector <Bullet*> bullets;
 	SDL_Keycode currKey;
 	bool bullet_ = false;
 	int direction = -1;
 	int direction_bullet = -1;
 	int direction_temp = DGObject::eUp;
+
+
+	void drawObject(GObject &obj);
 };
 
 #endif /* STATES_GAME_H_ */
