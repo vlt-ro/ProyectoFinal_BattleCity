@@ -35,38 +35,40 @@ Enemy::Enemy(int x, int y):
 
 int Enemy::move(int step, vector<GObject*> &obj, int direction)
 {
+	const SDL_Point target_position={13*Config::UN,25*Config::UN};
 	unsigned int cticks = SDL_GetTicks();
-	if(cticks > ticks + 1000)
-	{
-		ticks = cticks; //Update the "timer"
-		switch(rand()%4)
-		{
-		case 0:
-			direction = DGObject::eUp;
-			break;
-		case 1:
-			direction = DGObject::eDown;
-			break;
-		case 2:
-			direction = DGObject::eLeft;
-			break;
-		case 3:
-			direction = DGObject::eRight;
-			break;
-		}
-	}
+    float p = static_cast<float>(rand()) / RAND_MAX;
 
-//	if(cticks%2)
-		return Tank::move(step,obj,direction);
-//	return -1;
+	if(cticks > ticks)
+	{
+		ticks = cticks + rand()%800 + 100; //Update the "timer"
+		if(p < 0.8  && target_position.x > 0 && target_position.y > 0)
+		{
+			int dx = target_position.x - (getPosition().x + getDimension().w / 2);
+			int dy = target_position.y - (getPosition().y + getDimension().h / 2);
+
+			p = static_cast<float>(rand()) / RAND_MAX;
+
+			if(abs(dx) > abs(dy))
+				direction = p < 0.7 ? (dx < 0 ? eLeft : eRight) : (dy < 0 ? eUp : eDown);
+			else
+				direction = p < 0.7 ? (dy < 0 ? eUp : eDown) : (dy < 0 ? eLeft : eRight);
+		}
+		else
+			direction = rand() % 4;
+	}
+	else
+		direction = orientation;
+
+	return Tank::move(step,obj,direction);
 }
 
 Bullet* Enemy::shoot()
 {
 	unsigned int cticks = SDL_GetTicks();
-	if(cticks > ticksShoot + 1000)
+	if(cticks > ticksShoot)
 	{
-		ticksShoot = cticks;
+		ticksShoot = cticks + rand()%500 + 500;
 		return  Tank::shoot();
 	}
 	return nullptr;

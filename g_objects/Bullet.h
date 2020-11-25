@@ -19,8 +19,6 @@ class Bullet: public DGObject
 public:
 	Bullet(int x, int y,int direction);
 	virtual ~Bullet();
-protected:
-	int direction = -1;
 };
 #endif /* BULLET_H_ */
 
