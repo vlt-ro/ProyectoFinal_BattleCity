@@ -26,6 +26,16 @@ using namespace std;
 class Game: public State
 {
 public:
+
+	/**
+	 * Events returned by the "task" method
+	 */
+	enum
+	{
+		eVICTORY = 0x05,///< Mode "one player" was selected
+		eFAIL,      ///< Mode "Two player" was selected
+	};
+
 	Game();
 	virtual ~Game();
 
@@ -50,6 +60,10 @@ private:
 	int direction_bullet = -1;
 	int direction_temp = DGObject::eUp;
 
+	int n_enemy = 0;
+	int n_lifes = 10;
+	int puntaje = 0;
+	bool death = false;
 
 	void drawObject(GObject &obj);
 	void destroyObject(int ind);
