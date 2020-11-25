@@ -118,7 +118,7 @@ int Game::task()
 			Enemy *pObj = dynamic_cast<Enemy*>(obj);
 			if(pObj)
 			{
-				pObj->move(Config::UN/2,obstacles);
+				pObj->move(Config::UN/4,obstacles);
 				Bullet *b = pObj->shoot();
 				if(b)
 					bullets.push_back(b);

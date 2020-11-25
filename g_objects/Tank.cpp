@@ -22,16 +22,16 @@ Bullet* Tank::shoot()
 	switch(orientation)
 	{
 	case eUp:
-		b = new Bullet(d.x+12, d.y+6, eUp);
+		b = new Bullet(d.x+12, d.y+5, eUp);
 		break;
 	case eDown:
-		b = new Bullet(d.x+12, d.y+d.h-6, eDown);
+		b = new Bullet(d.x+12, d.y+d.h-5, eDown);
 		break;
 	case eLeft:
-		b = new Bullet(d.x+6, d.y+12, eLeft);
+		b = new Bullet(d.x+5, d.y+12, eLeft);
 		break;
 	case eRight:
-		b = new Bullet(d.x+d.w-6, d.y+12, eRight);
+		b = new Bullet(d.x+d.w-5, d.y+12, eRight);
 		break;
 	}
 
