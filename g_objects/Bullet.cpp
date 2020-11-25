@@ -22,6 +22,7 @@ Bullet::Bullet(int x, int y,int direction):
 
 	orientation = direction;
 	setTexture(&textures[orientation]);
+	setID(Config::BULLET);
 	this ->direction=direction;
 }
 Bullet::~Bullet() {

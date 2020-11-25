@@ -6,10 +6,12 @@
  */
 
 #include "Tank.h"
+#include "../config.h"
 
 Tank::Tank(size_t height, size_t width, int xPos, int yPos):
 	  DGObject(height, width, xPos, yPos)
 {
+	setID(Config::TANK);
 }
 
 Tank::~Tank() {}

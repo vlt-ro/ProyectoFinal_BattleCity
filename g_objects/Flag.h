@@ -13,7 +13,6 @@
 class Flag: public GObject
 {
 public:
-	Flag(SDL_Point position);
 	Flag(int x, int y);
 	virtual ~Flag();
 };

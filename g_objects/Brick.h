@@ -14,7 +14,6 @@
 class Brick: public GObject
 {
 public:
-	Brick(SDL_Point position);
 	Brick(int x, int y);
 	virtual ~Brick();
 };

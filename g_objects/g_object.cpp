@@ -13,12 +13,7 @@ GObject::GObject(size_t height, size_t width, int xPos, int yPos)
 	rect.x = xPos;
 	rect.y = yPos;
 	texture = {0,0,0,0};
-}
-
-GObject::GObject(SDL_Rect rect)
-{
-	this->rect = rect;
-	texture = {0,0,0,0};
+	id=0;
 }
 
 void GObject::setPosition(int x,int y)
@@ -47,6 +42,16 @@ const SDL_Rect* GObject::getTexture()
 void GObject::setTexture(const SDL_Rect *texture)
 {
 	this->texture = *texture;
+}
+
+unsigned GObject::getID()
+{
+	return id;
+}
+
+void GObject::setID(unsigned id)
+{
+	this->id = id;
 }
 
 

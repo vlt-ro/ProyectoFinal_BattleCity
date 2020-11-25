@@ -40,8 +40,7 @@ public:
 private:
 	map<string, SDL_Texture*> texturaGame;
 	vector<GObject> obstacles;
-	multimap <string, GObject> objects;
-	multimap <string, GObject> :: iterator itr;
+	vector<GObject> objects;
 	Flag flag;
 	Ally ally;
 

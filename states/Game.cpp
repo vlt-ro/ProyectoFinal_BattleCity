@@ -60,19 +60,19 @@ int Game::task()
 	{
 	case SDLK_UP:
 		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eUp, Config::UN/2, objects );
+		ally.move(Config::UN/2, obstacles, DGObject::eUp);
 		break;
 	case SDLK_DOWN:
 		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eDown, Config::UN/2, objects );
+		ally.move(Config::UN/2, obstacles, DGObject::eDown);
 		break;
 	case SDLK_LEFT:
 		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eLeft, Config::UN/2, objects );
+		ally.move(Config::UN/2, obstacles, DGObject::eLeft);
 		break;
 	case SDLK_RIGHT:
 		Render::drawRect(ally.getDimension(),Render::black,true);
-		ally.move(DGObject::eRight, Config::UN/2, objects );
+		ally.move(Config::UN/2, obstacles, DGObject::eRight);
 		break;
 	case SDLK_SPACE:
 		b = ally.shoot();
@@ -87,70 +87,34 @@ int Game::task()
 
 	SDL_Rect obstacle={0,0,0,0};
 
-//	for (int i=0; i<bullets.size();i++)
-//	{
-//		Render::drawRect(bullets[i]->getDimension(),Render::black,true);
-//		obstacle = bullets[i]->move(Config::UN,objects );
-//		Render::drawObject(bullets[i]->getTexture(), bullets[i]->getPosition().x, bullets[i]->getPosition().y);
-//
-//		if (obstacle.w==-1 )
-//		{
-//			Render::drawRect(bullets[i]->getDimension(),Render::black,true);
-//			bullets.erase(bullets.begin() + i);
-//		}
-//		else if (obstacle.w>0 and obstacle.h>0 )
-//		{
-//			Render::drawRect(obstacle,Render::black,true);
-//			Render::drawRect(bullets[i]->getDimension(),Render::black,true);
-//			bullets.erase(bullets.begin() + i);
-//		}
-//		else if (bullets[i]->getDimension().x==0 )
-//		{
-//			delete bullets[i]; //Free memory
-//			bullets.erase(bullets.begin() + i);
-//		}
-//	}
-
 	for(auto bIt = bullets.begin(); bIt < bullets.end(); bIt++)
 	{
 		auto &b = (*bIt);
-		bool delBullet = false;
-		auto oldDim = b->getDimension();
-		if(!b->move(Config::UN))
-		{
-			Render::drawRect(b->getDimension(), Render::black, true);
-			delBullet = true;
-		}
 
-		/* Check for collisions */
-		for(auto obsIt = objects.begin(); obsIt != objects.end(); ++obsIt)
+		SDL_Point oldPos = b->getPosition();
+		Render::drawRect(b->getDimension(), Render::black, true);
+		int ind = b->move(Config::UN,obstacles);
+		if( ind >= 0)
 		{
-			auto &obs = *obsIt;
-			if(b->collide(obs.second.getDimension()))
+			if(obstacles[ind].getID() != Config::CONCRETE)
 			{
-				delBullet = true;
-				if(obs.first != "concrete" && obs.first != "ally")
-				{
-					Render::drawRect(obs.second.getDimension(),Render::black,true);
-					objects.erase(obsIt);
-				}
+				Render::drawRect(obstacles[ind].getDimension(),Render::black,true);
+				obstacles.erase(obstacles.begin()+ind);
 			}
 		}
 
-		if(delBullet)
+		if(oldPos.x == b->getPosition().x && oldPos.y == b->getPosition().y)
 		{
 			delete b;
 			bullets.erase(bIt);
 			continue;
 		}
-
-		Render::drawRect(oldDim, Render::black, true);
 		drawObject(*b);
 	}
 
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();
-	SDL_Delay(100);
+	SDL_Delay(70);
 
 	return 0;
 }
@@ -250,19 +214,18 @@ bool Game::start()
     		switch(mapa[i][j])
     		{
 				case 'b':
-					objects.insert(pair <string, GObject> ("bricks", Brick(xPos,yPos)));
 					obstacles.push_back(Brick(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'c':
-					objects.insert(pair <string, GObject> ("concrete", Concrete(xPos,yPos)));
 					obstacles.push_back(Concrete(xPos,yPos));
 					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
 					break;
 				case 'f':
-					objects.insert(pair <string, GObject> ("flag", Flag(xPos,yPos)));
-					flag.setPosition(xPos, yPos);
-					Render::drawObject(flag.getTexture(), xPos, yPos);
+					obstacles.push_back(Flag(xPos,yPos));
+					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
+//					flag.setPosition(xPos, yPos);
+//					Render::drawObject(flag.getTexture(), xPos, yPos);
 					break;
 				case 'e':
 					Render::drawObject(xPos-6, yPos-6, Config::UN-2, Config::UN-2, texturaGame["enemy_g"]);

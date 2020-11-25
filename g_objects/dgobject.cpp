@@ -24,47 +24,19 @@ DGObject::~DGObject()
 {
 }
 
-bool DGObject::move(int step)
+int DGObject::move(int step)
 {
 	bool r = false;
-	SDL_Rect d = getDimension();
-
-	switch(orientation)
+	SDL_Rect d = moveRect(getDimension(), step, orientation);
+	if(d.x != getPosition().x || d.y != getPosition().y)
 	{
-	case eUp:
-		if(d.y-step >= 0)
-		{
-			setPosition(d.x, d.y - step);
-			r = true;
-		}
-		break;
-	case eDown:
-		if(d.y + step <= Config::SCREEN_HEIGHT - d.h)
-		{
-			setPosition(d.x, d.y + step);
-			r = true;
-		}
-		break;
-	case eLeft:
-		if(d.x-step >= 0)
-		{
-			setPosition(d.x-step, d.y);
-			r = true;
-		}
-		break;
-	case eRight:
-		if((d.x + step) <= (Config::SCREEN_WIDTH - 48 -d.w))
-		{
-			setPosition(d.x+step, d.y);
-			r = true;
-		}
-		break;
+		setPosition(d.x, d.y);
+		r = true;
 	}
-
 	return r;
 }
 
-bool DGObject::move(int dir, int step)
+int DGObject::move(int dir, int step)
 {
 	if(dir != orientation)
 	{
@@ -76,15 +48,14 @@ bool DGObject::move(int dir, int step)
 		else
 			return false;
 	}
-
 	return move(step);
 }
 
 
-bool DGObject::move(int direction, int step, multimap <string, GObject> &objects )
+int DGObject::move(int direction, int step, multimap <string, GObject> &objects )
 {
 	bool move_ = true;
-	SDL_Rect dim = getDimension();
+	SDL_Rect dim = moveRect(getDimension(),step,direction);
 
 	switch(direction)
 	{
@@ -116,6 +87,33 @@ bool DGObject::move(int direction, int step, multimap <string, GObject> &objects
 	return move(direction, move_? step : 0);
 }
 
+int DGObject::move(int step, vector<GObject> &obj, int dir)
+{
+	int r = -1;
+
+	if(dir != orientation)
+	{
+		if(dir==eUp || dir==eDown || dir==eLeft || dir==eRight)
+		{
+			setTexture(&textures[dir]);
+			orientation = dir;
+		}
+	}
+
+
+	SDL_Rect d = moveRect(getDimension(), step, orientation);
+	if(d.x != getPosition().x || d.y != getPosition().y)
+	{
+		for( auto it=obj.begin(); it<obj.end(); it++ )
+		{
+			if(collide(d, (*it).getDimension()))
+				return it - obj.begin();
+		}
+		setPosition(d.x, d.y);
+	}
+	return r;
+}
+
 bool DGObject::collide(SDL_Rect rect1, SDL_Rect rect2)
 {
     SDL_Rect intersect_rect;
@@ -133,5 +131,29 @@ bool DGObject::collide(SDL_Rect rect1, SDL_Rect rect2)
 bool DGObject::collide(SDL_Rect rect)
 {
    return collide(getDimension(), rect);
+}
+
+SDL_Rect DGObject::moveRect(SDL_Rect rect, int step, int orientation)
+{
+	switch(orientation)
+	{
+	case eUp:
+		if(rect.y-step >= 0)
+			rect.y -= step;
+		break;
+	case eDown:
+		if(rect.y + step <= Config::SCREEN_HEIGHT - rect.h)
+			rect.y += step;
+		break;
+	case eLeft:
+		if(rect.x-step >= 0)
+			rect.x -= step;
+		break;
+	case eRight:
+		if((rect.x + step) <= (Config::SCREEN_WIDTH - 48 -rect.w))
+			rect.x += step;
+		break;
+	}
+	return rect;
 }
 

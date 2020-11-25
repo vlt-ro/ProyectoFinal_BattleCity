@@ -25,12 +25,6 @@ public:
 	 */
 	GObject(size_t height=0, size_t width=0, int xPos=0, int yPos=0);
 
-	/**
-	 * @param rect	Rectangle with the position and dimension
-	 * 				information of the new graphic element object
-	 */
-	GObject(SDL_Rect rect);
-
 	virtual ~GObject(){}; // to avoid bad performance while deleting a derived object
 
 	/**
@@ -52,9 +46,15 @@ public:
 	const SDL_Rect * getTexture();
 	void setTexture(const SDL_Rect *texture);
 
+	unsigned getID();
+
 private:
+	unsigned id;
 	SDL_Rect rect; //rectangle with  dimension and position information
 	SDL_Rect texture; // Really it's not a texture
+
+protected:
+	void setID(unsigned);
 };
 
 #endif /* GOBJECT_H_ */

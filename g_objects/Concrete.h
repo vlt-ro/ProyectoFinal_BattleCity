@@ -13,7 +13,6 @@
 class Concrete: public GObject
 {
 public:
-	Concrete(SDL_Point position);
 	Concrete(int x, int y);
 	virtual ~Concrete();
 };
