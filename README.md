@@ -1,6 +1,6 @@
 # BattleCity
 
-## Contribuyentes
+## Contribuidores
 Andrés Santiago Duque Escobar, Valentina Roquemen Echeverry
 
 ## Acerca del juego
@@ -13,7 +13,8 @@ El objetivo del  es controlar un tanque sobre un escenario plagado de tanques en
 
 Este juego usa la librería SDL 2.0. Para instalarla en Ubuntu puede seguir las siguientes instrucciones: 
 
-``` apt-get install libsdl2-dev ```
+``` apt-get install libsdl2-dev ``` 
+
 ``` apt-get install libsdl2-image-dev ```
 
 ## Instalación
@@ -25,10 +26,11 @@ Este juego usa la librería SDL 2.0. Para instalarla en Ubuntu puede seguir las 
 2. Abrir la terminal en la carpeta donde se clonó el repositorio y corra los siguientes comandos:
 
 ``` cd build ```
-``` make ```
-``` cp BattleCity ../BattleCity ```
-``` cd .. ```
 
-3. Para correr el juego ejecute:
+``` make ```
+
+``` cp BattleCity ../BattleCity ```
+
+3. Para correr el juego ejecute desde la carpeta en la que se clonó el repositorio:
 
 ``` ./BattleCity```
