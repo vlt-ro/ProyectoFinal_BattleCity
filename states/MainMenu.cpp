@@ -105,9 +105,8 @@ bool MainMenu::start()
 
 bool MainMenu::stop()
 {
-	//TODO
-	//texturas
-	//cargar mapa
+	for(auto it:texturaMainMenu)
+		SDL_DestroyTexture(it.second);
 	return false;
 }
 

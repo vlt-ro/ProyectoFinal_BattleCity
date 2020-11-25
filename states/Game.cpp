@@ -159,12 +159,12 @@ bool Game::start()
 
 bool Game::stop()
 {
-	delete ally;
 	for(auto it=objects.begin(); it<objects.end(); it++)
 		delete (*it); //Free memory
 	for(auto it=bullets.begin(); it<bullets.end(); it++)
 		delete (*it); //Free memory
-	//TODO: free texturaGame
+	for(auto it:texturaGame)
+		SDL_DestroyTexture(it.second);
 	return false;
 }
 

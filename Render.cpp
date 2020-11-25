@@ -159,6 +159,19 @@ void Render::presentRender()
 	SDL_RenderPresent( render );
 }
 
+//Frees media and shuts down SDL
+void Render::close()
+{
+
+	//Destroy window
+	SDL_DestroyRenderer( render );
+	render = NULL;
+
+	//Quit SDL subsystems
+	IMG_Quit();
+	TTF_Quit();
+}
+
 /*bool Render::collide(SDL_Rect rect1, SDL_Rect rect2)
 {
     SDL_Rect intersect_rect;

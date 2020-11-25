@@ -15,17 +15,11 @@ public :
   BattleCity();
   ~BattleCity();
 
-  /**
-   * @brief Imprime las reglas del juego
-   */
-  void gameRules();
 
   /**
    * @brief Menu en el que el usario puede decidir jugar o leer las reglas
    */
   void start();
-
-  void closeGraphics();
 
 private :   
 

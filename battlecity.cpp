@@ -5,14 +5,12 @@
 #include <SDL2/SDL_ttf.h>
 
 #include <SDL2/SDL_image.h>
-#include "battlecity.h" 
-#include  "graphics.h"
+#include "battlecity.h"
 
 #include "states/MainMenu.h"
 #include "states/Game.h"
 #include "Render.h"
 #include "config.h"
-using namespace graphics;
 
 using namespace std;
 
@@ -27,13 +25,12 @@ BattleCity::~BattleCity()
 {
 	if(currState)
 		delete currState;
-
+	Render::close();
 	SDL_DestroyWindow(window);
+	window = nullptr;
+	SDL_Quit();
 }
 
-void BattleCity::gameRules()
-{
-}
 
 void BattleCity::start()
 {
@@ -102,11 +99,6 @@ void BattleCity::start()
     }
 }
 
-void BattleCity::closeGraphics()
-{
-    //Free resources and close SDL
-    close();
-}
 
 bool BattleCity::init()
 {
