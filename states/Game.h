@@ -55,6 +55,7 @@ private:
 	SDL_Keycode currKey;
 	vector<vector<int>> enemy_counter;
 	int n_lifes;
+	unsigned int enemyTicks;
 
 	void moveAlly();
 	void moveBullets();

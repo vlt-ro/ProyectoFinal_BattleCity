@@ -30,7 +30,7 @@ Enemy::Enemy(int x, int y):
 
 	/* Set initial times */
 	ticks = SDL_GetTicks();
-	ticksShoot = ticks;
+	ticksShoot = ticks+1000;
 }
 
 int Enemy::move(int step, vector<GObject*> &obj, int direction)
@@ -68,7 +68,7 @@ Bullet* Enemy::shoot()
 	unsigned int cticks = SDL_GetTicks();
 	if(cticks > ticksShoot)
 	{
-		ticksShoot = cticks + rand()%500 + 500;
+		ticksShoot = cticks + rand()%2000 + 1000;
 		return  Tank::shoot();
 	}
 	return nullptr;

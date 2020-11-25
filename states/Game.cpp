@@ -17,6 +17,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <algorithm>
 #include <utility>
 #include <stdio.h>
 #include <iterator>
@@ -27,12 +28,26 @@
 using std::string;
 using namespace std;
 
+namespace
+{
+//	#define NPOS 3
+	SDL_Point EnemyPos[] =  {
+								{0,32},
+								{20*Config::UN,64},
+								{12*Config::UN,32},
+								{24*Config::UN,0}
+							};
+	const std::size_t NPOS = sizeof(EnemyPos)/sizeof(SDL_Point);
+	int curEnemyPos = NPOS-1;
+}
+
 Game::Game()
 {
 	ally = nullptr;
 	currKey = SDLK_UNKNOWN;
 	status = eCONTINUE;
 	n_lifes = 10;
+	enemyTicks = SDL_GetTicks();
 }
 
 Game::~Game()
@@ -57,17 +72,14 @@ void Game::inputKey(string key)
 int Game::task()
 {
 	moveAlly();
-	moveBullets();
 	moveEnemies();
+	moveBullets();
 
-	if(status != eCONTINUE)
-		return status;
-
-//	if(ally)
-//		Render::drawObject(ally->getTexture(), ally->getPosition().x, ally->getPosition().y);
-	Render::presentRender();
-	SDL_Delay(70);
-
+	if(status == eCONTINUE)
+	{
+		Render::presentRender();
+		SDL_Delay(70);
+	}
 	return status;
 }
 
@@ -233,7 +245,7 @@ void Game::moveBullets()
 
 void Game::moveEnemies()
 {
-	int n_enemytemp = 0;
+	unsigned n_enemytemp = 0;
 	for(auto obj : objects)
 	{
 		if(obj->getID() == Config::ENEMY)
@@ -252,9 +264,13 @@ void Game::moveEnemies()
 		}
 	}
 
-	if (n_enemytemp<1)
+	unsigned int cticks = SDL_GetTicks();
+	if (n_enemytemp < std::min(NPOS, enemy_counter.size()) &&
+		cticks > enemyTicks)
 	{
-		objects.push_back(new Enemy(0,0));
+		enemyTicks = cticks + rand()%3000 + 1000;
+		curEnemyPos = (curEnemyPos + 1)%NPOS;
+		objects.push_back(new Enemy(EnemyPos[curEnemyPos].x, EnemyPos[curEnemyPos].y));
 		drawObject(*objects.back());
 	}
 }
