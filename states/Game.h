@@ -50,8 +50,7 @@ public:
 private:
 	map<string, SDL_Texture*> texturaGame;
 	vector<GObject*> obstacles;
-	Flag flag;
-	Ally ally;
+	Ally *ally;
 
 	vector <Bullet*> bullets;
 	SDL_Keycode currKey;
@@ -64,9 +63,12 @@ private:
 	int n_lifes = 10;
 	int puntaje = 0;
 	bool death = false;
+	bool isFlagDestroyed;
 
 	void drawObject(GObject &obj);
 	void destroyObject(int ind);
+	void createAlly();
+	void destroyAlly();
 };
 
 #endif /* STATES_GAME_H_ */
