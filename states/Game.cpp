@@ -109,6 +109,7 @@ int Game::task()
 	}
 
 	/* move the enemies */
+	int n_enemytemp = 0;
 	for(auto obj : obstacles)
 	{
 		if(obj->getID() == Config::ENEMY)
@@ -123,10 +124,40 @@ int Game::task()
 					bullets.push_back(b);
 			}
 			drawObject(*obj);
+			n_enemytemp += 1;
 		}
+
 	}
 
+	if(n_enemy==3)
+	{
+		puntaje = 10;
+		score();
+		return eVICTORY;
+	}
+	if (n_enemytemp<1)
+	{
+	    obstacles.push_back(new Enemy(0,48));
+	    n_enemy += 1;
+	    //Render::drawObject(obstacles.back()->getTexture(), 0, 48);
+	}
 
+	//death = true;
+
+	if(death)
+	{
+		death = false;
+		n_lifes -= 1;
+
+		if (n_lifes == 0)
+		{
+			gameOver();
+			return eFAIL;
+		}
+		Render::drawRect(27*Config::UN+8, 12*Config::UN-8, 16, 16, Render::gray, true);
+		Render::drawText(27*Config::UN+8, 12*Config::UN-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
+
+	}
 
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();
@@ -173,8 +204,6 @@ void Game::score()
     Render::presentRender();
 	SDL_Delay(250);
 
-	int puntaje = 200;
-
 	for (int i=0; i<=puntaje;i++)
 	{
 	    Render::drawRect(266, 95, 40, 14, Render::black, true);
@@ -182,8 +211,8 @@ void Game::score()
 	    Render::presentRender();
 	    SDL_Delay(20);
 	}
-
-
+	SDL_Delay(1000);
+	Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
 }
 
 bool Game::start()
@@ -248,7 +277,7 @@ bool Game::start()
 					break;
 				case 'a':
 					Render::drawObject(xPos-10, yPos-10, Config::UN, Config::UN, texturaGame["ally"]);
-					Render::drawText(xPos+8, yPos-8, 15, 15, Render::black, Config::font_prstartk, 32, "10");
+					Render::drawText(xPos+8, yPos-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
 					break;
 				case 'g':
 					Render::drawObject(xPos-6, yPos-6, 31, 26, texturaGame["flag_g"]);
@@ -261,7 +290,7 @@ bool Game::start()
     //TODO: test
     obstacles.push_back(new Enemy(0,48));
     Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
-
+    n_enemy = 1;
 	return true;
 }
 

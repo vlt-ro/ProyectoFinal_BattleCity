@@ -89,6 +89,14 @@ void BattleCity::start()
             	case MainMenu::eEXIT:
             		quit = true;
             		break;
+            	case Game::eVICTORY:
+            	case Game::eFAIL:
+					/* Update current state */
+					delete currState;
+					currState = new MainMenu;
+					currState->start(); //Initialize the new state
+					break;
+
             }
         }
     }
