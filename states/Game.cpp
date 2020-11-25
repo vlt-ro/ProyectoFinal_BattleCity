@@ -31,7 +31,8 @@ Game::Game()
 {
 	ally = nullptr;
 	currKey = SDLK_UNKNOWN;
-	isFlagDestroyed = false;
+	status = eCONTINUE;
+	n_lifes = 10;
 }
 
 Game::~Game()
@@ -55,53 +56,154 @@ void Game::inputKey(string key)
 
 int Game::task()
 {
-	Bullet *b;
+	moveAlly();
+	moveBullets();
+	moveEnemies();
+
+	if(status != eCONTINUE)
+		return status;
+
 //	if(ally)
-//	{
+//		Render::drawObject(ally->getTexture(), ally->getPosition().x, ally->getPosition().y);
+	Render::presentRender();
+	SDL_Delay(70);
+
+	return status;
+}
+
+
+bool Game::start()
+{
+	ifstream file1(Config::textureGame);
+    ifstream file2(Config::textureGame_names);
+
+    string str;
+    vector<string> texturas;
+    vector<string> texturas_names;
+
+    while (getline(file1,str)){ texturas.push_back(str);}
+    while (getline(file2,str)){ texturas_names.push_back(str);}
+
+    for (unsigned i = 0; i < texturas.size(); ++i)
+    {
+        texturaGame.insert(pair<string, SDL_Texture*>(texturas_names[i], Render::loadTexture( texturas[i])));
+    }
+
+    Render::drawRect(0,0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::gray, true);
+    Render::drawText((Config::SCREEN_WIDTH-196)/2,(Config::SCREEN_HEIGHT-28)/2, 196, 28, Render::white, Config::font_prstartk, 68, "STAGE 1");
+
+    Render::presentRender();
+
+    SDL_Delay(1500);
+
+    Render::drawRect(0, 0, Config::SCREEN_WIDTH-48, Config::SCREEN_HEIGHT, Render::black, true);
+    Render::drawRect(Config::SCREEN_WIDTH-48, 0, 48, Config::SCREEN_HEIGHT, Render::gray, true);
+
+    ifstream file(Config::mapLevel1);
+
+    vector<string> mapa;
+
+    while (getline(file,str)){ mapa.push_back(str);}
+
+    objects.clear();
+    int xPos,yPos;
+    for (unsigned i = 0; i < mapa.size(); ++i)
+    {
+    	for (unsigned j = 0; j < mapa[0].size(); ++j)
+    	{
+    		xPos = j*Config::UN;
+    		yPos = i*Config::UN;
+    		switch(mapa[i][j])
+    		{
+				case 'b':
+					objects.push_back(new Brick(xPos,yPos));
+					Render::drawObject(objects.back()->getTexture(), xPos, yPos);
+					break;
+				case 'c':
+					objects.push_back(new Concrete(xPos,yPos));
+					Render::drawObject(objects.back()->getTexture(), xPos, yPos);
+					break;
+				case 'f':
+					objects.push_back(new Flag(xPos,yPos));
+					Render::drawObject(objects.back()->getTexture(), xPos, yPos);
+					break;
+				case 'e':
+					Render::drawObject(xPos-6, yPos-6, Config::UN-2, Config::UN-2, texturaGame["enemy_g"]);
+					enemy_counter.push_back({xPos-6, yPos-6});
+					break;
+				case 'a':
+					Render::drawObject(xPos-10, yPos-10, Config::UN, Config::UN, texturaGame["ally"]);
+					Render::drawText(xPos+8, yPos-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
+					break;
+				case 'g':
+					Render::drawObject(xPos-6, yPos-6, 31, 26, texturaGame["flag_g"]);
+					Render::drawText(xPos+4, yPos+Config::UN , 15, 15, Render::black, Config::font_prstartk, 32, "1");
+					break;
+			}
+    	}
+    }
+	return true;
+}
+
+bool Game::stop()
+{
+	delete ally;
+	for(auto it=objects.begin(); it<objects.end(); it++)
+		delete (*it); //Free memory
+	for(auto it=bullets.begin(); it<bullets.end(); it++)
+		delete (*it); //Free memory
+	//TODO: free texturaGame
+	return false;
+}
+
+void Game::moveAlly()
+{
+	if(ally)
+	{
+		Bullet *b;
 		switch(currKey)
 		{
 		case SDLK_UP:
 			Render::drawRect(ally->getDimension(),Render::black,true);
-			ally->move(Config::UN/2, obstacles, DGObject::eUp);
+			ally->move(Config::UN/2, objects, DGObject::eUp);
 			break;
 		case SDLK_DOWN:
 			Render::drawRect(ally->getDimension(),Render::black,true);
-			ally->move(Config::UN/2, obstacles, DGObject::eDown);
+			ally->move(Config::UN/2, objects, DGObject::eDown);
 			break;
 		case SDLK_LEFT:
 			Render::drawRect(ally->getDimension(),Render::black,true);
-			ally->move(Config::UN/2, obstacles, DGObject::eLeft);
+			ally->move(Config::UN/2, objects, DGObject::eLeft);
 			break;
 		case SDLK_RIGHT:
 			Render::drawRect(ally->getDimension(),Render::black,true);
-			ally->move(Config::UN/2, obstacles, DGObject::eRight);
+			ally->move(Config::UN/2, objects, DGObject::eRight);
 			break;
 		case SDLK_SPACE:
 			b = ally->shoot();
 			if(b)
 				bullets.push_back(b);
 			break;
-
-		default:
-			direction = -1;
 		}
-//	}
-//	else
-//		createAlly();
+		currKey = SDLK_UNKNOWN; //clear key
+		drawObject(*ally);
+	}
+	else
+		createAlly();
+}
 
-	currKey = SDLK_UNKNOWN; //clear key
-
-	/* move the bullets */
+void Game::moveBullets()
+{
 	for(auto bIt = bullets.begin(); bIt < bullets.end(); bIt++)
 	{
 		auto &b = (*bIt);
 
 		SDL_Point oldPos = b->getPosition();
 		Render::drawRect(b->getDimension(), Render::black, true);
-		int ind = b->move(Config::UN,obstacles);
+		int ind = b->move(Config::UN,objects);
 		if( ind >= 0)
 		{
-			switch(obstacles[ind]->getID())
+			switch(objects[ind]->getID())
 			{
 			case Config::CONCRETE:
 				break;
@@ -109,10 +211,11 @@ int Game::task()
 				destroyAlly();
 				break;
 			case Config::ENEMY:
-				destroyEnemy();
+				destroyEnemy(ind);
 				break;
 			case Config::FLAG:
-				isFlagDestroyed = true;
+				destroyFlag();
+				break;
 			default:
 				destroyObject(ind);
 			}
@@ -126,10 +229,12 @@ int Game::task()
 		}
 		drawObject(*b);
 	}
+}
 
-	/* move the enemies */
+void Game::moveEnemies()
+{
 	int n_enemytemp = 0;
-	for(auto obj : obstacles)
+	for(auto obj : objects)
 	{
 		if(obj->getID() == Config::ENEMY)
 		{
@@ -137,7 +242,7 @@ int Game::task()
 			Enemy *pObj = dynamic_cast<Enemy*>(obj);
 			if(pObj)
 			{
-				pObj->move(Config::UN/4,obstacles);
+				pObj->move(Config::UN/4,objects);
 				Bullet *b = pObj->shoot();
 				if(b)
 					bullets.push_back(b);
@@ -147,64 +252,48 @@ int Game::task()
 		}
 	}
 
-	deathCounter(); // Actualiza si murio y si ya perdio todas las vidas
-
 	if (n_enemytemp<1)
-	    obstacles.push_back(new Enemy(0,0));
-
-	if (n_lifes == 0 || isFlagDestroyed)
 	{
-		if(isFlagDestroyed)
-			Render::drawObject(&Config::txDestroyedFlag, 192, 384);
-		gameOver();
-		return eDEFEAT;
+		objects.push_back(new Enemy(0,0));
+		drawObject(*objects.back());
 	}
-
-	if(ally)
-		Render::drawObject(ally->getTexture(), ally->getPosition().x, ally->getPosition().y);
-	Render::presentRender();
-	SDL_Delay(70);
-
-	return status;
 }
 
-void Game::destroyEnemy()
+void Game::destroyFlag()
 {
-	n_enemy = enemy_counter.size();
-	if(n_enemy==1)
+	for(auto it=objects.begin(); it<objects.end(); it++)
 	{
-		puntaje = 10;
+		if((*it)->getID() == Config::FLAG)
+		{
+			Render::drawRect((*it)->getDimension(), Render::black, true);
+			delete (*it); //free memory
+			objects.erase(it); //Remove the ally from the obstacles vector
+			Render::drawObject(&Config::txDestroyedFlag, 192, 384);
+			Render::presentRender();
+			SDL_Delay(2000);
+			gameOver();
+			status = eDEFEAT;
+			return;
+		}
+	}
+}
+
+void Game::destroyEnemy(int ind)
+{
+	if(enemy_counter.size() <= 1)
+	{
 		score();
 		status = eVICTORY;
 	}
 	else
 	{
-		Render::drawRect(enemy_counter[n_enemy-1][0],enemy_counter[n_enemy-1][1], 14, 14, Render::gray, true);
+		Render::drawRect(enemy_counter.back()[0],enemy_counter.back()[1], 14, 14, Render::gray, true);
 		enemy_counter.pop_back();
+
+		Render::drawRect(objects[ind]->getDimension(), Render::black, true);
+		delete objects[ind];
+		objects.erase(objects.begin()+ind);
 		status = eCONTINUE;
-	}
-}
-
-void Game::deathCounter()
-{
-	if(death)
-	{
-		death = false;
-		n_lifes -= 1;
-
-		if (n_lifes == 0)
-		{
-			gameOver();
-			status = eDEFEAT;
-			//TODO: Destruir el aliado
-		}
-		else
-		{
-			Render::drawRect(27*Config::UN+8, 12*Config::UN-8, 16, 16, Render::gray, true);
-			Render::drawText(27*Config::UN+8, 12*Config::UN-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
-			//TODO: Generar nuevo aliado
-			status = eCONTINUE;
-		}
 	}
 }
 
@@ -230,9 +319,10 @@ void Game::gameOver()
 
 	score();
 }
+
 void Game::score()
 {
-	puntaje = n_lifes*50 + (13-enemy_counter.size())*20;
+	int puntaje = n_lifes*50 + (13-enemy_counter.size())*20;
 
 	Render::drawRect(0, 0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::black, true);
 	Render::presentRender();
@@ -260,99 +350,6 @@ void Game::score()
 
 }
 
-bool Game::start()
-{
-	ifstream file1(Config::textureGame);
-    ifstream file2(Config::textureGame_names);
-
-    string str;
-    vector<string> texturas;
-    vector<string> texturas_names;
-
-    while (getline(file1,str)){ texturas.push_back(str);}
-    while (getline(file2,str)){ texturas_names.push_back(str);}
-
-    for (int i = 0; i < texturas.size(); ++i)
-    {
-        texturaGame.insert(pair<string, SDL_Texture*>(texturas_names[i], Render::loadTexture( texturas[i])));
-    }
-
-    Render::drawRect(0,0, Config::SCREEN_WIDTH, Config::SCREEN_HEIGHT, Render::gray, true);
-    Render::drawText((Config::SCREEN_WIDTH-196)/2,(Config::SCREEN_HEIGHT-28)/2, 196, 28, Render::white, Config::font_prstartk, 68, "STAGE 1");
-
-    Render::presentRender();
-
-    SDL_Delay(1500);
-
-    Render::drawRect(0, 0, Config::SCREEN_WIDTH-48, Config::SCREEN_HEIGHT, Render::black, true);
-    Render::drawRect(Config::SCREEN_WIDTH-48, 0, 48, Config::SCREEN_HEIGHT, Render::gray, true);
-
-    ifstream file(Config::mapLevel1);
-
-    vector<string> mapa;
-
-    while (getline(file,str)){ mapa.push_back(str);}
-
-    obstacles.clear();
-    int xPos,yPos;
-    for (int i = 0; i < mapa.size(); ++i)
-    {
-    	for (int j = 0; j < mapa[0].size(); ++j)
-    	{
-    		xPos = j*Config::UN;
-    		yPos = i*Config::UN;
-    		switch(mapa[i][j])
-    		{
-				case 'b':
-					obstacles.push_back(new Brick(xPos,yPos));
-					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
-					break;
-				case 'c':
-					obstacles.push_back(new Concrete(xPos,yPos));
-					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
-					break;
-				case 'f':
-					obstacles.push_back(new Flag(xPos,yPos));
-					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
-//					flag.setPosition(xPos, yPos);
-//					Render::drawObject(flag.getTexture(), xPos, yPos);
-					break;
-				case 'e':
-					Render::drawObject(xPos-6, yPos-6, Config::UN-2, Config::UN-2, texturaGame["enemy_g"]);
-					enemy_counter.push_back({xPos-6, yPos-6});
-					break;
-				case 'a':
-					Render::drawObject(xPos-10, yPos-10, Config::UN, Config::UN, texturaGame["ally"]);
-					Render::drawText(xPos+8, yPos-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
-					break;
-				case 'g':
-					Render::drawObject(xPos-6, yPos-6, 31, 26, texturaGame["flag_g"]);
-					Render::drawText(xPos+4, yPos+Config::UN , 15, 15, Render::black, Config::font_prstartk, 32, "1");
-					break;
-			}
-    	}
-    }
-
-    //TODO: test
-    obstacles.push_back(new Enemy(0,48));
-    Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
-    n_enemy = 1;
-    createAlly();
-	return true;
-}
-
-bool Game::stop()
-{
-	destroyAlly();
-	for(auto it=obstacles.begin(); it<obstacles.end(); it++)
-		delete (*it); //Free memory
-	for(auto it=bullets.begin(); it<bullets.end(); it++)
-		delete (*it); //Free memory
-	//TODO: free texturaGame
-	return false;
-}
-
-
 void Game::drawObject(GObject &obj)
 {
 	Render::drawObject(obj.getTexture(), obj.getPosition().x, obj.getPosition().y);
@@ -360,9 +357,9 @@ void Game::drawObject(GObject &obj)
 
 void Game::destroyObject(int ind)
 {
-	Render::drawRect(obstacles[ind]->getDimension(),Render::black,true);
-	delete obstacles[ind];
-	obstacles.erase(obstacles.begin()+ind);
+	Render::drawRect(objects[ind]->getDimension(),Render::black,true);
+	delete objects[ind];
+	objects.erase(objects.begin()+ind);
 }
 
 void Game::createAlly()
@@ -372,7 +369,7 @@ void Game::createAlly()
 		ally = new Ally(32*4, Config::SCREEN_HEIGHT-32);
 		if(ally)
 		{
-			obstacles.push_back(ally);
+			objects.push_back(ally);
 			drawObject(*ally);
 		}
 	}
@@ -382,20 +379,25 @@ void Game::destroyAlly()
 {
 	if(--n_lifes > 0 && ally)
 	{
-		for(auto it=obstacles.begin(); it<obstacles.end(); it++)
+		for(auto it=objects.begin(); it<objects.end(); it++)
 		{
 			if((*it)->getID() == Config::ALLY)
 			{
 				Render::drawRect(27*Config::UN+8, 12*Config::UN-8, 16, 16, Render::gray, true);
 				Render::drawText(27*Config::UN+8, 12*Config::UN-8, 15, 15, Render::black, Config::font_prstartk, 32, to_string(n_lifes));
 				Render::drawRect(ally->getDimension(), Render::black, true);
-				obstacles.erase(it); //Remove the ally from the obstacles vector
+				objects.erase(it); //Remove the ally from the obstacles vector
 				delete ally; //free memory
 				ally = nullptr;
 				createAlly();
 				return;
 			}
 		}
+	}
+	else
+	{
+			gameOver();
+			status = eDEFEAT;
 	}
 }
 

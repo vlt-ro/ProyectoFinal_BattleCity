@@ -43,32 +43,27 @@ public:
 	// Inherit methods
 	void inputKey(string key);
 	int task();
-	void destroyEnemy();
-	void deathCounter();
-	void gameOver();
-	void score();
 	bool start();
 	bool stop();
 
 private:
 	map<string, SDL_Texture*> texturaGame;
-	vector<GObject*> obstacles;
+	vector<GObject*> objects;
 	Ally *ally;
-	int status = eCONTINUE;
+	int status;
 	vector <Bullet*> bullets;
 	SDL_Keycode currKey;
-	bool bullet_ = false;
-	int direction = -1;
-	int direction_bullet = -1;
-	int direction_temp = DGObject::eUp;
-
-	int n_enemy = 0;
 	vector<vector<int>> enemy_counter;
-	int n_lifes = 10;
-	int puntaje = 0;
-	bool death = false;
-	bool isFlagDestroyed;
+	int n_lifes;
 
+	void moveAlly();
+	void moveBullets();
+	void moveEnemies();
+
+	void destroyFlag();
+	void destroyEnemy(int ind);
+	void gameOver();
+	void score();
 	void drawObject(GObject &obj);
 	void destroyObject(int ind);
 	void createAlly();
