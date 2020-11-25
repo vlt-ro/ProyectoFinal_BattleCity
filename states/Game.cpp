@@ -22,14 +22,14 @@
 #include <iterator>
 #include "../g_objects/Brick.h"
 #include "../g_objects/Concrete.h"
-#include "../g_objects/Bullet.h"
+#include "../g_objects/Enemy.h"
 
 using std::string;
 using namespace std;
 
 Game::Game():
 		flag(0,0),
-		ally(0,0)
+		ally(32*4, Config::SCREEN_HEIGHT-32)
 {
 	currKey = SDLK_UNKNOWN;
 }
@@ -85,8 +85,7 @@ int Game::task()
 	}
 	currKey = SDLK_UNKNOWN; //clear key
 
-	SDL_Rect obstacle={0,0,0,0};
-
+	/* move the bullets */
 	for(auto bIt = bullets.begin(); bIt < bullets.end(); bIt++)
 	{
 		auto &b = (*bIt);
@@ -96,11 +95,8 @@ int Game::task()
 		int ind = b->move(Config::UN,obstacles);
 		if( ind >= 0)
 		{
-			if(obstacles[ind].getID() != Config::CONCRETE)
-			{
-				Render::drawRect(obstacles[ind].getDimension(),Render::black,true);
-				obstacles.erase(obstacles.begin()+ind);
-			}
+			if(obstacles[ind]->getID() != Config::CONCRETE)
+				destroyObject(ind);
 		}
 
 		if(oldPos.x == b->getPosition().x && oldPos.y == b->getPosition().y)
@@ -111,6 +107,26 @@ int Game::task()
 		}
 		drawObject(*b);
 	}
+
+	/* move the enemies */
+	for(auto obj : obstacles)
+	{
+		if(obj->getID() == Config::ENEMY)
+		{
+			Render::drawRect(obj->getDimension(),Render::black,true);
+			Enemy *pObj = dynamic_cast<Enemy*>(obj);
+			if(pObj)
+			{
+				pObj->move(Config::UN/2,obstacles);
+				Bullet *b = pObj->shoot();
+				if(b)
+					bullets.push_back(b);
+			}
+			drawObject(*obj);
+		}
+	}
+
+
 
 	Render::drawObject(ally.getTexture(), ally.getPosition().x, ally.getPosition().y);
 	Render::presentRender();
@@ -214,16 +230,16 @@ bool Game::start()
     		switch(mapa[i][j])
     		{
 				case 'b':
-					obstacles.push_back(Brick(xPos,yPos));
-					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
+					obstacles.push_back(new Brick(xPos,yPos));
+					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
 					break;
 				case 'c':
-					obstacles.push_back(Concrete(xPos,yPos));
-					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
+					obstacles.push_back(new Concrete(xPos,yPos));
+					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
 					break;
 				case 'f':
-					obstacles.push_back(Flag(xPos,yPos));
-					Render::drawObject(obstacles.back().getTexture(), xPos, yPos);
+					obstacles.push_back(new Flag(xPos,yPos));
+					Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
 //					flag.setPosition(xPos, yPos);
 //					Render::drawObject(flag.getTexture(), xPos, yPos);
 					break;
@@ -242,6 +258,10 @@ bool Game::start()
     	}
     }
 
+    //TODO: test
+    obstacles.push_back(new Enemy(0,48));
+    Render::drawObject(obstacles.back()->getTexture(), xPos, yPos);
+
 	return true;
 }
 
@@ -255,5 +275,12 @@ bool Game::stop()
 void Game::drawObject(GObject &obj)
 {
 	Render::drawObject(obj.getTexture(), obj.getPosition().x, obj.getPosition().y);
+}
+
+void Game::destroyObject(int ind)
+{
+	Render::drawRect(obstacles[ind]->getDimension(),Render::black,true);
+	delete obstacles[ind];
+	obstacles.erase(obstacles.begin()+ind);
 }
 

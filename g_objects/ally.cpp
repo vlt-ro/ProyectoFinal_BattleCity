@@ -16,6 +16,7 @@ Ally::Ally(int x, int y):
 		textures[i] = Config::txAlly[i];
 	orientation = eUp;
 	setTexture(&textures[eUp]);
+	setID(Config::ALLY);
 }
 
 Ally::~Ally()

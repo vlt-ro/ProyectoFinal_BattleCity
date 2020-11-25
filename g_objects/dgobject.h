@@ -25,8 +25,7 @@ public:
 
 	int move(int step);
 	int move(int direction, int step);
-	int move(int direction, int step, multimap <string, GObject> &objects );
-	int move(int step, vector<GObject> &obj, int direction =-1);
+	int move(int step, vector<GObject*> &obj, int direction =-1);
 	bool collide(SDL_Rect rect);
 	bool collide(SDL_Rect rect1, SDL_Rect rect2);
 

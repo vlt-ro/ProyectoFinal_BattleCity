@@ -38,7 +38,7 @@ public:
     static const SDL_Rect txBullet[];
 
     /* Objects IDs */
-    enum {BRICK=1,CONCRETE,FLAG,TANK,BULLET};
+    enum {BRICK=1,CONCRETE,FLAG,BULLET,ENEMY,ALLY};
 };
 
 

@@ -39,8 +39,7 @@ public:
 
 private:
 	map<string, SDL_Texture*> texturaGame;
-	vector<GObject> obstacles;
-	vector<GObject> objects;
+	vector<GObject*> obstacles;
 	Flag flag;
 	Ally ally;
 
@@ -53,6 +52,7 @@ private:
 
 
 	void drawObject(GObject &obj);
+	void destroyObject(int ind);
 };
 
 #endif /* STATES_GAME_H_ */

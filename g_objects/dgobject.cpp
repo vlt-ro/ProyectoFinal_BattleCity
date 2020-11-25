@@ -51,43 +51,7 @@ int DGObject::move(int dir, int step)
 	return move(step);
 }
 
-
-int DGObject::move(int direction, int step, multimap <string, GObject> &objects )
-{
-	bool move_ = true;
-	SDL_Rect dim = moveRect(getDimension(),step,direction);
-
-	switch(direction)
-	{
-	case eUp:
-		dim.y -= step;
-		break;
-	case eDown:
-		dim.y += step;
-		break;
-	case eLeft:
-		dim.x -=step;
-		break;
-	case eRight:
-		dim.x += step;
-		break;
-	default:
-		move_ = false;
-	}
-
-	for (itr = objects.begin(); itr != objects.end(); ++itr)
-	{
-		if(	collide(dim,itr->second.getDimension()))
-		{
-			move_ = false;
-			break;
-		}
-	}
-
-	return move(direction, move_? step : 0);
-}
-
-int DGObject::move(int step, vector<GObject> &obj, int dir)
+int DGObject::move(int step, vector<GObject*> &obj, int dir)
 {
 	int r = -1;
 
@@ -106,7 +70,7 @@ int DGObject::move(int step, vector<GObject> &obj, int dir)
 	{
 		for( auto it=obj.begin(); it<obj.end(); it++ )
 		{
-			if(collide(d, (*it).getDimension()))
+			if(collide(d, (*it)->getDimension()) && (this != (*it)))
 				return it - obj.begin();
 		}
 		setPosition(d.x, d.y);
