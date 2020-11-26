@@ -7,7 +7,7 @@ Andrés Santiago Duque Escobar, Valentina Roquemen Echeverry
 
 Battle City es un videojuego de tanques producido y publicado por Namco como una adaptación del clásico arcade Tank Battalion.
 
-El objetivo del  es controlar un tanque sobre un escenario plagado de tanques enemigos, evitando que destruyan su base militar. 
+El objetivo del juego es controlar un tanque sobre un escenario plagado de tanques enemigos, evitando que destruyan su base militar. 
 
 ## Requerimientos
 
@@ -18,6 +18,8 @@ Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguien
 ``` apt-get install libsdl2-dev ``` 
 
 ``` apt-get install libsdl2-image-dev ```
+
+``` apt-get install libsdl2-ttf-dev ```
 
 * Arch
 
