@@ -14,10 +14,11 @@ El objetivo del juego es controlar un tanque sobre un escenario plagado de tanqu
 
 # Controles
 
-* ![Flechas para moverse](https://img2.freepng.es/20180422/pge/kisspng-computer-keyboard-arrow-keys-clip-art-5adca312ee3014.5868969515244091069756.jpg) 
+ ![Flechas para moverse](https://img2.freepng.es/20180422/pge/kisspng-computer-keyboard-arrow-keys-clip-art-5adca312ee3014.5868969515244091069756.jpg) 
 
-* ![Space para disparar](https://userscontent2.emaze.com/images/116fcc9b-4071-4b73-9905-a74d7f865e36/cdcd0e7a-8986-4c3f-90cd-80308757aaa8.png)
+![Space para disparar](https://userscontent2.emaze.com/images/116fcc9b-4071-4b73-9905-a74d7f865e36/cdcd0e7a-8986-4c3f-90cd-80308757aaa8.png)
 
+![enemy](concrete.png)
 
 ## Requerimientos
 
