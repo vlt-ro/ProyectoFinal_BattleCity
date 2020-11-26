@@ -1,1 +1,5 @@
 /Debug/
+*.o
+*.d
+build/BattleCity
+BattleCity

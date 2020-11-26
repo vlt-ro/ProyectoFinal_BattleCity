@@ -28,19 +28,18 @@ class Game: public State
 public:
 
 	/**
-	 * Events returned by the "task" method
+	 * Eventos que serán retornados por método task.
 	 */
 	enum
 	{
-		eCONTINUE = 0,
-		eVICTORY = 0x05,///< Mode "one player" was selected
-		eDEFEAT,      ///< Mode "Two player" was selected
+		eCONTINUE = 0,  //< Estado: Continua el juego
+		eVICTORY = 0x05,//< Estado: Gana el juego
+		eDEFEAT,        //< Estado: Pierde el juego
 	};
 
 	Game();
 	virtual ~Game();
 
-	// Inherit methods
 	void inputKey(string key);
 	int task();
 	bool start();

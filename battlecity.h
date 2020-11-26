@@ -15,19 +15,18 @@ public :
   BattleCity();
   ~BattleCity();
 
-
   /**
-   * @brief Menu en el que el usario puede decidir jugar o leer las reglas
+   * Inicia y controla el estado del juego y los eventos del teclado. 
    */
   void start();
 
 private :   
 
-  State *currState; //Current state
-  SDL_Window *window; //Game window
+  State *currState; //Estado actual
+  SDL_Window *window; // Ventana del juego
 
   /**
-   * Starts up SDL and creates window
+   * Inicia las librerías de SDL y la ventana
    */
   bool init();
 

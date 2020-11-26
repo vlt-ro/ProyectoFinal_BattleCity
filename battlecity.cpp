@@ -68,7 +68,6 @@ void BattleCity::start()
                 }
             }
 
-
             state = currState->task();
 
             switch(state)

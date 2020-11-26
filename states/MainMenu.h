@@ -23,27 +23,27 @@ class MainMenu: public State
 public:
 
 	/**
-	 * Events returned by the "task" method
+	 * Eventos que serán retornados por método task.
 	 */
 	enum
 	{
-		eONE_PLAYER = 0x01,///< Mode "one player" was selected
-		eTWO_PLAYERS,      ///< Mode "Two player" was selected
-		eEXIT              ///< Exit game
+		eONE_PLAYER = 0x01,///< Modo: un jugador
+		eTWO_PLAYERS,      ///< Modo: dos jugadores
+		eEXIT              ///< Salir del juego
 	};
 
 	MainMenu();
 	virtual ~MainMenu();
 
-	// Inherit methods
 	void inputKey(string key);
 	int task();
 	bool start();
 	bool stop();
 
-    map<string, SDL_Texture*> texturaMainMenu;
 private:
-    int yPos = 142;
+
+    map<string, SDL_Texture*> texturaMainMenu;
+    int yPos;
     int counter;
     string currKey="";
 };

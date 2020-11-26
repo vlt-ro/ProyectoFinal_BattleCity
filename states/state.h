@@ -19,31 +19,25 @@ public:
 	virtual ~State(){};
 
 	/**
-	 * @brief Pass a character to take decisions. This method
-	 * 		  is useful to pass characters read from the keyboard.
-	 * @param key
+	 * Pasa el indicador de la tecla presionada.
 	 */
 	virtual void inputKey(string key) = 0;
 
-	//TODO: The next functions must be changed to a thread
 	/**
-	 * Main task of the state
+	 * @brief Tarea del estado actual.
+	 * @note Debe de ser llamada periodicamente.	
 	 */
 	virtual int task() = 0;
 
 	/**
-	 * Starts (re-starts) the state
+	 * Inicializa el estado
 	 */
 	virtual bool start() = 0;
 
 	/**
-	 * Stop the state and clean resources
+	 * Detiene el estado y libera memoria
 	 */
 	virtual bool stop() = 0;
 
 };
-
-
-
-
 #endif /* STATES_STATE_H_ */

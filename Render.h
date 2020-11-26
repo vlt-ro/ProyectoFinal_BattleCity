@@ -21,7 +21,6 @@ public:
 
 	static void init(SDL_Window *);
 	static SDL_Texture* loadTexture(std::string path);
-	//static void drawObject(GObject &object);
 	static void drawObject(int ObjectXPosition, int ObjectYPosition, int ObjectWidth, int ObjectHeight, SDL_Texture* Texture);
 	static void drawObject(const SDL_Rect *source, int x, int y);
 	static void drawText(int TextXPosition, int TextYPosition, int TextWidth, int TextHeight, SDL_Color TextColor, string FontName, int FontSize, string Text);
@@ -31,12 +30,10 @@ public:
 
 	static void close();
 
-	//static bool collide(SDL_Rect rect1, SDL_Rect rect2);
-
-	static const SDL_Color red; //Red
-	static const SDL_Color white; //Red
-	static const SDL_Color black; //Red
-	static const SDL_Color gray; //Red
+	static const SDL_Color red; 
+	static const SDL_Color white; 
+	static const SDL_Color black; 
+	static const SDL_Color gray; 
 
 private:
 	static SDL_Renderer *render;

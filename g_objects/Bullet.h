@@ -14,6 +14,7 @@
 #include <iterator>
 #include <iostream>
 using namespace std;
+
 class Bullet: public DGObject
 {
 public:

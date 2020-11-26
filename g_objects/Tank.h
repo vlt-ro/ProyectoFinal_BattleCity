@@ -17,6 +17,10 @@ public:
 	Tank(size_t height, size_t width, int xPos, int yPos);
 	virtual ~Tank();
 
+	/**
+	 * Genera un objeto de la clase Bullet con la misma 
+	 * orientación del objeto Tank.
+	 */
 	Bullet* shoot();
 };
 

@@ -26,6 +26,7 @@ using namespace std;
 MainMenu::MainMenu()
 {
 	counter = 0;
+	yPos = 142;
 }
 
 MainMenu::~MainMenu()
@@ -66,8 +67,8 @@ int MainMenu::task()
 			result = eEXIT;
 	}
 
-	currKey=""; //Clean the string
-	SDL_Delay(100); //Delay to enhance the visualization while a key is pressed
+	currKey="";
+	SDL_Delay(100); 
 	return result;
 }
 
@@ -89,7 +90,6 @@ bool MainMenu::start()
     {
         texturaMainMenu.insert(pair<string, SDL_Texture*>(texturas_names[i], Render::loadTexture( texturas[i])));
     }
-
 
     Render::drawText((Config::SCREEN_WIDTH-404)/2, 48, 404, 74, Render::white, Config::font_prstartk, 68, "TANKS");
     Render::drawText((Config::SCREEN_WIDTH-404)/2, 48, 404, 74, Render::red, Config::font_tank, 58, "TANKS");

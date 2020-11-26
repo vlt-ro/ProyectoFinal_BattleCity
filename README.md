@@ -1,7 +1,10 @@
 # BattleCity
 
 ## Contribuidores
-Andrés Santiago Duque Escobar, Valentina Roquemen Echeverry
+
+Andrés Santiago Duque Escobar
+
+Valentina Roquemen Echeverry
 
 ## Acerca del juego
 
@@ -30,6 +33,7 @@ Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguien
 ``` pamac install sdl_image``` 
 
 ``` pacman -S sdl_image``` 
+
 
 ## Instalación
 

@@ -17,7 +17,7 @@ class Config{
 
 public:
 
-    static const int UN;  //Número minimo de pixeles
+    static const int UN; 
     static const int SCREEN_WIDTH;
     static const int SCREEN_HEIGHT;
     static const string textureMainMenu;
@@ -29,7 +29,7 @@ public:
     static const string font_prstartk;
     static const string path_global_texture;
 
-    /* Objects "textures" */
+    /* Región donde se encuentran las texturas de los objetos */
     static const SDL_Rect txBrick;
     static const SDL_Rect txConcrete;
     static const SDL_Rect txFlag;
@@ -38,7 +38,7 @@ public:
     static const SDL_Rect txEnemy[];
     static const SDL_Rect txBullet[];
 
-    /* Objects IDs */
+    /* ID de los objetos */
     enum {BRICK=1,CONCRETE,FLAG,BULLET,ENEMY,ALLY};
 };
 
