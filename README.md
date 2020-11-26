@@ -12,6 +12,13 @@ Battle City es un videojuego de tanques producido y publicado por Namco como una
 
 El objetivo del juego es controlar un tanque sobre un escenario plagado de tanques enemigos, evitando que destruyan su base militar. 
 
+# Controles
+
+* ![Flechas para moverse](https://img2.freepng.es/20180422/pge/kisspng-computer-keyboard-arrow-keys-clip-art-5adca312ee3014.5868969515244091069756.jpg) 
+
+* ![Space para disparar](https://userscontent2.emaze.com/images/116fcc9b-4071-4b73-9905-a74d7f865e36/cdcd0e7a-8986-4c3f-90cd-80308757aaa8.png)
+
+
 ## Requerimientos
 
 Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguientes instrucciones: 
@@ -34,6 +41,9 @@ Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguien
 
 ``` pacman -S sdl_image``` 
 
+* Mac
+
+``` brew install sdl2 sdl_ttf sdl2_image``` 
 
 ## Instalación
 
@@ -49,6 +59,6 @@ Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguien
 
 ``` cp BattleCity ../BattleCity ```
 
-3. Para correr el juego ejecute desde la carpeta en la que se clonó el repositorio:
+3. Para correr el juego ejecute **desde** la carpeta en la que se clonó el repositorio, si no lo corre desde ahí le va a sacar un error al cargar las texturas:
 
 ``` ./BattleCity```
