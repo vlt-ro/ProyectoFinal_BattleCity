@@ -18,7 +18,7 @@ El objetivo del juego es controlar un tanque sobre un escenario plagado de tanqu
 
 ![Space para disparar](https://userscontent2.emaze.com/images/116fcc9b-4071-4b73-9905-a74d7f865e36/cdcd0e7a-8986-4c3f-90cd-80308757aaa8.png)
 
-![enemy](concrete.png)
+![enemy](resources/img/concrete.png)
 
 ## Requerimientos
 
