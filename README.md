@@ -11,11 +11,23 @@ El objetivo del  es controlar un tanque sobre un escenario plagado de tanques en
 
 ## Requerimientos
 
-Este juego usa la librería SDL 2.0. Para instalarla en Ubuntu puede seguir las siguientes instrucciones: 
+Este juego usa la librería SDL 2.0. Para instalarla en puede seguir las siguientes instrucciones: 
+
+* Ubuntu
 
 ``` apt-get install libsdl2-dev ``` 
 
 ``` apt-get install libsdl2-image-dev ```
+
+* Arch
+
+``` pamac install lua-sdl2```
+
+``` pacman -S lua-sdl2``` 
+
+``` pamac install sdl_image``` 
+
+``` pacman -S sdl_image``` 
 
 ## Instalación
 
